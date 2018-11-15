@@ -29,8 +29,8 @@ wechat:
 
 spring:
   profiles:
-    include: prod
-    active: prod
+    include: dev
+    active: dev
   output:
     ansi:
       enabled: detect
