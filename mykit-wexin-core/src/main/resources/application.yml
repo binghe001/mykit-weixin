@@ -1,0 +1,37 @@
+server:
+  port: 30014
+  tomcat:
+    uri-encoding: UTF-8
+
+mybatis:
+  #config-location: classpath*:io/mykit/weixin/config/mybatis-config.xml
+  mapper-locations: classpath*:io/mykit/weixin/mapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+  type-aliases-package: io.mykit.weixin.entity   # 注意：对应实体类的路径
+
+
+#pagehelper分页插件
+pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
+    row-bounds-with-count: true
+    offset-as-page-num: true
+
+logging:
+  level: debug
+
+#配置的微信信息
+wechat:
+  mp:
+    token: medcare
+    aesKey:
+
+spring:
+  profiles:
+    include: prod
+    active: prod
+  output:
+    ansi:
+      enabled: detect
+

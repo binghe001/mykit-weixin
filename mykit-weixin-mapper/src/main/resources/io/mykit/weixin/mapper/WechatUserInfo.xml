@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.mykit.weixin.mapper.WechatUserInfoMapper">
+
+
+    <insert id="saveWechatUserInfo">
+        insert into mp_wechat_user_info(
+          id,
+          t_create_time,
+          t_create_date,
+          t_status,
+          t_remark,
+          t_month_sharding,
+          t_last_modify_time,
+          foreign_system_id,
+          foreign_system,
+          slave_user,
+          open_id,
+          foreign_id,
+          foreign_type,
+          nick_name,
+          t_sex,
+          t_province,
+          t_city,
+          t_country,
+          head_imgurl,
+          t_privilege,
+          union_id
+        )
+        values (
+          #{id},
+          #{createTime},
+          #{createDate},
+          #{status},
+          #{remark},
+          #{monthSharding},
+          #{lastModifyTime},
+          #{foreignSystemId},
+          #{foreignSystem},
+          #{slaveUser},
+          #{openId},
+          #{foreignId},
+          #{foreignType},
+          #{nickname},
+          #{sex},
+          #{province},
+          #{city},
+          #{country},
+          #{headimgurl},
+          #{privilege},
+          #{unionid}
+        )
+    </insert>
+
+    <!--微信用户完整的映射关系-->
+    <resultMap id="wechatUserInfoAllMap" type="WechatUserInfo">
+        <id property="id" column="id"/>
+        <result property="createTime" column="t_create_time"/>
+        <result property="createDate" column="t_create_date"/>
+        <result property="status" column="t_status"/>
+        <result property="remark" column="t_remark"/>
+        <result property="monthSharding" column="t_month_sharding"/>
+        <result property="lastModifyTime" column="t_last_modify_time"/>
+
+        <result property="foreignSystemId" column="foreign_system_id"/>
+        <result property="foreignSystem" column="foreign_system"/>
+        <result property="slaveUser" column="slave_user"/>
+        <result property="openId" column="open_id"/>
+        <result property="foreignId" column="foreign_id"/>
+        <result property="foreignType" column="foreign_type"/>
+        <result property="nickname" column="nick_name"/>
+        <result property="sex" column="t_sex"/>
+        <result property="province" column="t_province"/>
+        <result property="city" column="t_city"/>
+        <result property="country" column="t_country"/>
+        <result property="headimgurl" column="head_imgurl"/>
+        <result property="privilege" column="t_privilege"/>
+        <result property="unionid" column="union_id"/>
+
+    </resultMap>
+
+    <!--获取完整的微信用户信息-->
+    <select id="getWechatUserInfo" resultMap="wechatUserInfoAllMap">
+        select id,
+              t_create_time,
+              t_create_date,
+              t_status,
+              t_remark,
+              t_month_sharding,
+              t_last_modify_time,
+              foreign_system_id,
+              foreign_system,
+              slave_user,
+              open_id,
+              foreign_id,
+              foreign_type,
+              nick_name,
+              t_sex,
+              t_province,
+              t_city,
+              t_country,
+              head_imgurl,
+              t_privilege,
+              union_id
+        from mp_wechat_user_info
+        where foreign_system_id = #{foreignSystemId}
+              and foreign_system = #{foreignSystem}
+              and foreign_id = #{foreignId}
+              and foreign_type = #{foreignType}
+    </select>
+
+    <!--获取指定用户的微信openId-->
+    <select id="getOpenId" resultType="string">
+        select
+              open_id
+        from mp_wechat_user_info
+        where foreign_system_id = #{foreignSystemId}
+              and foreign_system = #{foreignSystem}
+              and foreign_id = #{foreignId}
+              and foreign_type = #{foreignType}
+    </select>
+
+
+</mapper>

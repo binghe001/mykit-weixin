@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.mykit.weixin.mapper.WechatUserSubscribeMapper">
+
+    <!--保存关注记录-->
+    <insert id="saveWechatUserSubscribe">
+        insert into mp_wechat_user_subscribe(id, t_create_time, t_create_date, t_month_sharding, t_status, t_remark, t_last_modify_time, slave_user, open_id, msg_type, t_event)
+        values (#{id}, #{createTime}, #{createDate}, #{monthSharding}, #{status}, #{remark}, #{lastModifyTime}, #{slaveUser}, #{openId}, #{msgType}, #{event})
+    </insert>
+
+    <!--更新状态为关注状态-->
+    <update id="updateWxSubscribeEventMessage" parameterType="io.mykit.wechat.mp.beans.xml.receive.event.WxSubscribeEventMessage">
+        update mp_wechat_user_subscribe set t_event = #{event}, t_last_modify_time = DATE_FORMAT(NOW(),"%Y-%m-%d %H:%i:%s") where slave_user = #{toUserName} and open_id = #{fromUserName}
+    </update>
+
+    <!--更新状态为取消关注状态-->
+    <update id="updateWxUnSubscribeEventMessage" parameterType="io.mykit.wechat.mp.beans.xml.receive.event.WxUnSubscribeEventMessage">
+        update mp_wechat_user_subscribe set t_event = #{event},  t_last_modify_time = DATE_FORMAT(NOW(),"%Y-%m-%d %H:%i:%s") where slave_user = #{toUserName} and open_id = #{fromUserName}
+    </update>
+
+    <update id="updateEventStatus">
+        update mp_wechat_user_subscribe set t_event = #{event},  t_last_modify_time = DATE_FORMAT(NOW(),"%Y-%m-%d %H:%i:%s") where slave_user = #{slaveUser} and open_id = #{openId}
+    </update>
+
+    <!--根据微信开发者账号和微信openId获取信息-->
+    <select id="getWechatUserSubscribe" resultMap="wechatUserSubscribeAllMap">
+        select id, t_create_time, t_create_date, t_month_sharding, t_status, t_remark, t_last_modify_time, slave_user, open_id, msg_type, t_event
+        from mp_wechat_user_subscribe where slave_user = #{slaveUser} and open_id = #{openId}
+    </select>
+
+    <!--获取列表信息-->
+    <select id="getWechatUserSubscribes" resultMap="wechatUserSubscribeAllMap">
+          select id, t_create_time, t_create_date, t_month_sharding, t_status, t_remark, t_last_modify_time, slave_user, open_id, msg_type, t_event
+          from  mp_wechat_user_subscribe where t_status = #{status}
+    </select>
+
+
+    <!--表和实体的映射关系-->
+    <resultMap id="wechatUserSubscribeAllMap" type="WechatUserSubscribe">
+        <id property="id" column="id"/>
+        <result property="createTime" column="t_create_time"/>
+        <result property="createDate" column="t_create_date"/>
+        <result property="status" column="t_status"/>
+        <result property="remark" column="t_remark"/>
+        <result property="monthSharding" column="t_month_sharding"/>
+        <result property="lastModifyTime" column="t_last_modify_time"/>
+
+        <result property="slaveUser" column="slave_user"/>
+        <result property="openId" column="open_id"/>
+        <result property="msgType" column="msg_type"/>
+        <result property="event" column="t_event"/>
+    </resultMap>
+
+</mapper>

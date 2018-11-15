@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.mykit.weixin.mapper.WechatTemplateMapper">
+
+    <!--获取微信模板-->
+    <select id="getWechatTemplateByType" resultMap="wechatTemplateAllMap">
+        select wt.id, wt.t_type, wtj.wechat_template_id, wtj.account_id, wt.t_remark, wt.t_title, wt.t_content
+        from mp_wechat_template wt left join mp_wechat_account_template_join wtj on (wt.id = wtj.template_id )
+        where wt.t_type = #{type} and wt.t_status = 1 and wtj.account_id = #{accountId} and wtj.t_status = 1
+    </select>
+
+    <!--全局映射-->
+    <resultMap id="wechatTemplateAllMap" type="WechatTemplate">
+        <id property="id" column="id"/>
+        <result property="type" column="t_type"/>
+        <result property="wechatTemplateId" column="wechat_template_id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="remark" column="t_remark"/>
+        <result property="title" column="t_title"/>
+        <result property="content" column="t_content"/>
+    </resultMap>
+</mapper>

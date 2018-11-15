@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.mykit.weixin.mapper.WechatAccountMapper">
+
+    <!--获取微信账户表id-->
+    <select id="getIdByForeignIdAndSystem" resultType="string">
+        select id
+        from mp_wechat_account
+        where mp_foreign_system_id = #{foreignId} and mp_foreign_system = #{foreignSystem}
+    </select>
+
+    <!--根据状态获取微信账户列表-->
+    <select id="getAllWechatAccount" resultMap="wechatAccountAllMap">
+        select id,
+            t_create_time,
+            t_create_date,
+            t_month_sharding,
+            mp_foreign_system_id,
+            mp_foreign_system,
+            mp_slave_user,
+            mp_token,
+            mp_app_id,
+            mp_app_secret,
+            mp_url,
+            mp_encoding_aes_key,
+            t_status,
+            t_remark,
+            t_last_modify_time
+        from mp_wechat_account
+            <where>
+                <if test="array != null">
+                    and t_status in
+                    <foreach collection="array" open="(" close=")" separator="," item="s" index="i">
+                        #{s}
+                    </foreach>
+                </if>
+            </where>
+    </select>
+
+    <!--根据foreignId和foreignSystem获取微信账户信息-->
+    <select id="getWechatAccountByForeignIdAndSystem" resultMap="wechatAccountAllMap">
+         select id,
+            t_create_time,
+            t_create_date,
+            t_month_sharding,
+            mp_foreign_system_id,
+            mp_foreign_system,
+            mp_slave_user,
+            mp_token,
+            mp_app_id,
+            mp_app_secret,
+            mp_url,
+            mp_encoding_aes_key,
+            t_status,
+            t_remark,
+            t_last_modify_time
+        from mp_wechat_account
+        where mp_foreign_system_id = #{foreignId} and mp_foreign_system = #{foreignSystem}
+    </select>
+    
+
+    <!--微信账户实体类字段与数据库字段的对应关系-->
+    <resultMap id="wechatAccountAllMap" type="WechatAccount">
+        <id property="id" column="id"/>
+        <result property="createTime" column="t_create_time"/>
+        <result property="createDate" column="t_create_date"/>
+        <result property="status" column="t_status"/>
+        <result property="remark" column="t_remark"/>
+        <result property="monthSharding" column="t_month_sharding"/>
+        <result property="foreignSystemId" column="mp_foreign_system_id"/>
+        <result property="foreignSystem" column="mp_foreign_system"/>
+        <result property="slaveUser" column="mp_slave_user"/>
+        <result property="token"  column="mp_token"/>
+        <result property="appId" column="mp_app_id"/>
+        <result property="appSecret" column="mp_app_secret"/>
+        <result property="url" column="mp_url"/>
+        <result property="encodingAESKey" column="mp_encoding_aes_key"/>
+        <result property="lastModifyTime" column="t_last_modify_time"/>
+    </resultMap>
+</mapper>

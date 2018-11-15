@@ -1,0 +1,39 @@
+spring:
+  datasource:
+      url: jdbc:mysql://10.2.2.231:3306/wechat?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&autoReconnect=true&failOverReadOnly=false&useSSL=true
+      username: root
+      password: root
+      driver-class-name: com.mysql.jdbc.Driver
+      platform: mysql
+      type: com.alibaba.druid.pool.DruidDataSource
+      # 下面为连接池的补充设置，应用到上面所有数据源中
+      # 初始化大小，最小，最大
+      initialSize: 10
+      minIdle: 5
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 3600000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 3600000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      maxOpenPreparedStatements: 20
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      # connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+  #设置编码为UTF-8
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
