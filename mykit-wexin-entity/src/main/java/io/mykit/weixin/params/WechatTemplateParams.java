@@ -27,10 +27,17 @@ import lombok.Data;
 public class WechatTemplateParams extends WechatBaseParams {
     private static final long serialVersionUID = 3257996049797226649L;
 
+    private String first = "";
     private String keyword1 = "";
     private String keyword2 = "";
     private String keyword3 = "";
     private String keyword4 = "";
+    private String keyword5 = "";
+    private String keyword6 = "";
+    private String keyword7 = "";
+    private String keyword8 = "";
+    private String keyword9 = "";
+    private String keyword10 = "";
     private String remark = "";
     private String templatetType = "";
     //模板跳转链接
