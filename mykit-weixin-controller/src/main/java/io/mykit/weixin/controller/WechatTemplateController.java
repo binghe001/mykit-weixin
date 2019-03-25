@@ -65,4 +65,27 @@ public class WechatTemplateController {
             ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_SERVER_EXCEPTION, response);
         }
     }
+
+    /**
+     * 发送模板消息
+     * @param parameter
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/msg/send/v2", method = RequestMethod.POST)
+    public void sendMsgV2(String parameter, HttpServletRequest request, HttpServletResponse response){
+        try{
+            logger.info(parameter);
+            if(StringUtils.isEmpty(parameter)){
+                ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_PARAMETER_INVALID, response);
+                return;
+            }
+            WechatTemplateParams params = JsonUtils.json2Bean(parameter, WechatTemplateParams.class);
+            int code = wechatTemplateService.sendWechatTemplateMessageV2(params);
+            ResponseHelper.responseMessage(null, false, true, code, response);
+        }catch (Exception e){
+            e.printStackTrace();
+            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_SERVER_EXCEPTION, response);
+        }
+    }
 }

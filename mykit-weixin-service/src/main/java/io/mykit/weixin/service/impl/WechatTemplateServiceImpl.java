@@ -103,7 +103,9 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
         wxTemplateSend.setData(wxTemplateDataSend);
         wxTemplateSend.setTemplate_id(wechatTemplate.getWechatTemplateId());
         wxTemplateSend.setTouser(openId);
-        wxTemplateSend.setUrl(wechatTemplateParams.getUrl());
+        if(!StringUtils.isEmpty(wechatTemplateParams.getUrl())){
+            wxTemplateSend.setUrl(wechatTemplateParams.getUrl());
+        }
         //发送模板消息
         String result = WxTemplateSendHandler.sendTemplate(wechatAccount.getAppId(), wechatAccount.getAppSecret(), wxTemplateSend);
 
@@ -188,7 +190,9 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
         wxTemplateSend.setData(wxTemplateDataSend);
         wxTemplateSend.setTemplate_id(wechatTemplate.getWechatTemplateId());
         wxTemplateSend.setTouser(openId);
-        wxTemplateSend.setUrl(wechatTemplateParams.getUrl());
+        if(!StringUtils.isEmpty(wechatTemplateParams.getUrl())){
+            wxTemplateSend.setUrl(wechatTemplateParams.getUrl());
+        }
         //发送模板消息
         String result = WxTemplateSendHandler.sendTemplate(wechatAccount.getAppId(), wechatAccount.getAppSecret(), wxTemplateSend);
 
