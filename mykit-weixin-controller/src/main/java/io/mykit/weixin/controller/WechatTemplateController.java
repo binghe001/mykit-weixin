@@ -75,7 +75,6 @@ public class WechatTemplateController {
     @RequestMapping(value = "/msg/send/v2", method = RequestMethod.POST)
     public void sendMsgV2(String parameter, HttpServletRequest request, HttpServletResponse response){
         try{
-            logger.info(parameter);
             if(StringUtils.isEmpty(parameter)){
                 ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_PARAMETER_INVALID, response);
                 return;
