@@ -119,4 +119,89 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
         int count = wechatTemplateMsgLogMapper.saveWechatTemplateMsgLog(wechatTemplateMsgLog);
         return count > 0 ? MobileHttpCode.HTTP_NORMAL : MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED;
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int sendWechatTemplateMessageV2(WechatTemplateParams wechatTemplateParams) throws Exception {
+        WechatAccount wechatAccount = wechatAccountService.getWechatAccountByForeignIdAndSystem(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem());
+        if(wechatAccount == null){
+            logger.info("未获取到微信开发者账号信息....");
+            return MobileHttpCode.HTTP_NOT_GET_WECHAT_ACCOUNT;
+        }
+        //获取微信模板消息
+        logger.info(JsonUtils.bean2Json(wechatAccount));
+        WechatTemplate wechatTemplate = this.getWechatTemplateByType(wechatTemplateParams.getTemplatetType(), wechatAccount.getId());
+        if(wechatTemplate == null){
+            logger.info("未获取到微信消息模板....");
+            return MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE;
+        }
+        String openId = wechatUserInfoService.getOpenId(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem(), wechatTemplateParams.getForeignId(), wechatTemplateParams.getForeignType());
+        if(StringUtils.isEmpty(openId)){
+            logger.info("未获取到微信openid....");
+            return MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID;
+        }
+        WxTemplateDataSend wxTemplateDataSend = new WxTemplateDataSend();
+        wxTemplateDataSend.setKeyword1(new WxTemplateDataItemSend(wechatTemplateParams.getFirst(), "#173177"));
+        if(wechatTemplateParams.getKeywordCount() >= 1){
+            wxTemplateDataSend.setKeyword1(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword1(), "#173177"));
+        }
+
+        if(wechatTemplateParams.getKeywordCount() >= 2){
+            wxTemplateDataSend.setKeyword2(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword2(), "#173177"));
+        }
+
+        if(wechatTemplateParams.getKeywordCount() >= 3){
+            wxTemplateDataSend.setKeyword3(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword3(), "#173177"));
+        }
+
+        if(wechatTemplateParams.getKeywordCount() >= 4){
+            wxTemplateDataSend.setKeyword4(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword4(), "#173177"));
+        }
+
+        if(wechatTemplateParams.getKeywordCount() >= 5){
+            wxTemplateDataSend.setKeyword5(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword5(), "#173177"));
+        }
+
+        if(wechatTemplateParams.getKeywordCount() >= 6){
+            wxTemplateDataSend.setKeyword6(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword6(), "#173177"));
+        }
+
+        if(wechatTemplateParams.getKeywordCount() >= 7){
+            wxTemplateDataSend.setKeyword7(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword7(), "#173177"));
+        }
+
+        if(wechatTemplateParams.getKeywordCount() >= 8){
+            wxTemplateDataSend.setKeyword8(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword8(), "#173177"));
+        }
+
+        if(wechatTemplateParams.getKeywordCount() >= 9){
+            wxTemplateDataSend.setKeyword9(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword9(), "#173177"));
+        }
+
+        if(wechatTemplateParams.getKeywordCount() >= 10){
+            wxTemplateDataSend.setKeyword10(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword10(), "#173177"));
+        }
+
+        wxTemplateDataSend.setRemark(new WxTemplateDataItemSend(wechatTemplateParams.getRemark(), "#173177"));
+
+        WxTemplateSend wxTemplateSend = new WxTemplateSend();
+        wxTemplateSend.setData(wxTemplateDataSend);
+        wxTemplateSend.setTemplate_id(wechatTemplate.getWechatTemplateId());
+        wxTemplateSend.setTouser(openId);
+        wxTemplateSend.setUrl(wechatTemplateParams.getUrl());
+        //发送模板消息
+        String result = WxTemplateSendHandler.sendTemplate(wechatAccount.getAppId(), wechatAccount.getAppSecret(), wxTemplateSend);
+
+        WechatTemplateMsgLog wechatTemplateMsgLog = new WechatTemplateMsgLog();
+        wechatTemplateMsgLog.setAccountId(wechatAccount.getId());
+        wechatTemplateMsgLog.setTemplateId(wechatTemplate.getId());
+        wechatTemplateMsgLog.setType(wechatTemplate.getType());
+        wechatTemplateMsgLog.setWechatTemplateId(wechatTemplate.getWechatTemplateId());
+        wechatTemplateMsgLog.setParameter(JsonUtils.bean2Json(wechatTemplateParams));
+        wechatTemplateMsgLog.setTitle(wechatTemplate.getTitle());
+        wechatTemplateMsgLog.setContent(wechatTemplate.getContent());
+        wechatTemplateMsgLog.setResult(result);
+        int count = wechatTemplateMsgLogMapper.saveWechatTemplateMsgLog(wechatTemplateMsgLog);
+        return count > 0 ? MobileHttpCode.HTTP_NORMAL : MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED;
+    }
 }
