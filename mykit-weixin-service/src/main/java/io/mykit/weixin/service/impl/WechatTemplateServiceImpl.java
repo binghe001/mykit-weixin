@@ -143,7 +143,7 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
             return MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID;
         }
         WxTemplateDataSend wxTemplateDataSend = new WxTemplateDataSend();
-        wxTemplateDataSend.setKeyword1(new WxTemplateDataItemSend(wechatTemplateParams.getFirst(), "#173177"));
+        wxTemplateDataSend.setFirst(new WxTemplateDataItemSend(wechatTemplateParams.getFirst(), "#173177"));
         if(wechatTemplateParams.getKeywordCount() >= 1){
             wxTemplateDataSend.setKeyword1(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword1(), "#173177"));
         }
