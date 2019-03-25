@@ -27,6 +27,8 @@ import lombok.Data;
 public class WechatTemplateParams extends WechatBaseParams {
     private static final long serialVersionUID = 3257996049797226649L;
 
+    //关键字的个数，以此来判断关键字有多少个
+    private Integer keywordCount = 1;
     private String first = "";
     private String keyword1 = "";
     private String keyword2 = "";
