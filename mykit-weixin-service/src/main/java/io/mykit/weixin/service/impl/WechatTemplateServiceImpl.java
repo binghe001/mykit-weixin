@@ -130,6 +130,10 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
             logger.info("未获取到微信开发者账号信息....");
             return MobileHttpCode.HTTP_NOT_GET_WECHAT_ACCOUNT;
         }
+        //是否有权限发送模板消息,没有权限发送，直接返回状态码
+        if(StringUtils.isEmpty(wechatAccount.getSendTemplate()) || WechatConstants.SEND_NO.equals(wechatAccount.getSendTemplate())){
+            return MobileHttpCode.HTTP_NO_LIMIT_TO_SEND_TEMPLATE;
+        }
         //获取微信模板消息
         logger.info(JsonUtils.bean2Json(wechatAccount));
         WechatTemplate wechatTemplate = this.getWechatTemplateByType(wechatTemplateParams.getTemplatetType(), wechatAccount.getId());

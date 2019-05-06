@@ -67,4 +67,15 @@ public class WechatConstants {
      */
     public static final int WECHAT_CACHE_TIME = 1800;
 
+    /**
+     * 发送消息
+     */
+    public static final String SEND_YES = "send_yes";
+
+
+    /**
+     * 不发送消息
+     */
+    public static final String SEND_NO = "send_no";
+
 }

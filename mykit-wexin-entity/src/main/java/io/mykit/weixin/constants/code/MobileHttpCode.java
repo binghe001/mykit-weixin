@@ -34,4 +34,13 @@ public class MobileHttpCode extends BaseHttpCode {
 	 */
 	public static final int HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED = 6004;
 
+	/**
+	 * 没有权限发送模板消息
+	 */
+	public static final int HTTP_NO_LIMIT_TO_SEND_TEMPLATE = 6005;
+	/**
+	 * 没有权限发送客服消息
+	 */
+	public static final int HTTP_NO_LIMIT_TO_SEND_CUSTOM = 6006;
+
 }
