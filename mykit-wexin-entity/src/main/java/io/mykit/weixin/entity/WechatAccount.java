@@ -70,11 +70,21 @@ public class WechatAccount extends MonthShardingEntity {
      */
     private String url;
 
+    /**
+     * 是否发送模板消息
+     */
+    private String sendTemplate;
+
+    /**
+     * 是否发送客服消息
+     */
+    private String sendCustom;
+
     public WechatAccount(){
         super(new Date());
     }
 
-    public WechatAccount(String foreignSystemId, String foreignSystem, String slaveUser, String token, String appId, String appSecret, String encodingAESKey, String url) {
+    public WechatAccount(String foreignSystemId, String foreignSystem, String slaveUser, String token, String appId, String appSecret, String encodingAESKey, String url, String sendTemplate, String sendCustom) {
         super(new Date());
         this.foreignSystemId = foreignSystemId;
         this.foreignSystem = foreignSystem;
@@ -84,5 +94,7 @@ public class WechatAccount extends MonthShardingEntity {
         this.appSecret = appSecret;
         this.encodingAESKey = encodingAESKey;
         this.url = url;
+        this.sendTemplate = sendTemplate;
+        this.sendCustom = sendCustom;
     }
 }

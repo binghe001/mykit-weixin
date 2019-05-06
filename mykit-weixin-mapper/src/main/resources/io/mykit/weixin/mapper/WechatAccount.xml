@@ -26,7 +26,9 @@
             mp_encoding_aes_key,
             t_status,
             t_remark,
-            t_last_modify_time
+            t_last_modify_time,
+            mp_send_template,
+            mp_send_custom
         from mp_wechat_account
             <where>
                 <if test="array != null">
@@ -54,7 +56,9 @@
             mp_encoding_aes_key,
             t_status,
             t_remark,
-            t_last_modify_time
+            t_last_modify_time,
+            mp_send_template,
+            mp_send_custom
         from mp_wechat_account
         where mp_foreign_system_id = #{foreignId} and mp_foreign_system = #{foreignSystem}
     </select>
@@ -77,5 +81,7 @@
         <result property="url" column="mp_url"/>
         <result property="encodingAESKey" column="mp_encoding_aes_key"/>
         <result property="lastModifyTime" column="t_last_modify_time"/>
+        <result property="sendTemplate" column="mp_send_template"/>
+        <result property="sendCustom" column="mp_send_custom"/>
     </resultMap>
 </mapper>
