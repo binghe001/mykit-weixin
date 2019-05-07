@@ -122,6 +122,7 @@ public class WechatOAuth2Controller {
            //这里是回调的url
            String redirect_uri = URLEncoder.encode(callbackUrl, "UTF-8");
            String state = foreignSystemId.concat(WechatConstants.WECHAT_OAUTH2_STATE_SPLIT).concat(foreignSystem);
+           //静默授权
            String url = "https://open.weixin.qq.com/connect/oauth2/authorize?" +
                    "appid=" + wechatAccount.getAppId() +
                    "&redirect_uri="+ redirect_uri +
