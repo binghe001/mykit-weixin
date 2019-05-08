@@ -1,5 +1,5 @@
 /**
- * Copyright 2018-2118 the original author or authors.
+ * Copyright 2019-2999 the original author or authors.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,13 @@ import lombok.Data;
 
 /**
  * @author liuyazhuang
- * @date 2018/10/30 19:19
- * @description 发送模板消息记录
  * @version 1.0.0
+ * @date 2019/5/8
+ * @description 发送微信客服消息记录表
  */
 @Data
-public class WechatTemplateMsgLog extends MonthShardingEntity {
-
-    private static final long serialVersionUID = -2265868155567230548L;
-
+public class WechatKfaccountMsgLog extends MonthShardingEntity {
+    private static final long serialVersionUID = 5361673834973377809L;
 
     /**
      * 微信开发者账号表id
@@ -39,44 +37,4 @@ public class WechatTemplateMsgLog extends MonthShardingEntity {
      * 接收模板消息的微信用户openId
      */
     private String openId;
-
-    /**
-     * 微信模板id
-     */
-    private String templateId;
-
-    /**
-     * 类型，唯一标识
-     */
-    private String type;
-
-    /**
-     * 微信上配置的模板消息id
-     */
-    private String wechatTemplateId;
-
-    /**
-     * 模板标题
-     */
-    private String title;
-
-    /**
-     * 模板内容
-     */
-    private String content;
-
-    /**
-     * 其他业务系统传递的所有参数
-     */
-    private String parameter;
-
-    /**
-     * 发送模板消息构造的微信参数
-     */
-    private String wxParameter;
-
-    /**
-     * 结果
-     */
-    private String result;
 }

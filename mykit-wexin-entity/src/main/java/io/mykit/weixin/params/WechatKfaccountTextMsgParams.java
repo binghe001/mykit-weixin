@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.mykit.weixin.controller;
+package io.mykit.weixin.params;
 
-import io.mykit.weixin.service.WechatKfaccountTextMsgLogService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.annotation.Resource;
+import lombok.Data;
 
 /**
  * @author liuyazhuang
  * @version 1.0.0
  * @date 2019/5/8
- * @description 微信客服相关的控制类
+ * @description 微信客服文本消息
  */
-@Controller
-@RequestMapping(value = "/wechat/kfaccount")
-public class WechatKfaccountController {
-    @Resource
-    private WechatKfaccountTextMsgLogService wechatKfaccountMsgLogService;
-
-
+@Data
+public class WechatKfaccountTextMsgParams extends WechatKfaccountMsgParams {
+    private static final long serialVersionUID = -6134126025999753372L;
+    /**
+     * 发送的消息内容
+     */
+    private String content;
 }

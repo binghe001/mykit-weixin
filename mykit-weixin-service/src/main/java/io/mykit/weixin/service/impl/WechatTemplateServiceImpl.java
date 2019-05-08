@@ -117,7 +117,9 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
         wechatTemplateMsgLog.setParameter(JsonUtils.bean2Json(wechatTemplateParams));
         wechatTemplateMsgLog.setTitle(wechatTemplate.getTitle());
         wechatTemplateMsgLog.setContent(wechatTemplate.getContent());
+        wechatTemplateMsgLog.setOpenId(openId);
         wechatTemplateMsgLog.setResult(result);
+        wechatTemplateMsgLog.setWxParameter(JsonUtils.bean2Json(wxTemplateSend));
         int count = wechatTemplateMsgLogMapper.saveWechatTemplateMsgLog(wechatTemplateMsgLog);
         return count > 0 ? MobileHttpCode.HTTP_NORMAL : MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED;
     }
@@ -213,6 +215,7 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
         wechatTemplateMsgLog.setContent(wechatTemplate.getContent());
         wechatTemplateMsgLog.setOpenId(openId);
         wechatTemplateMsgLog.setResult(result);
+        wechatTemplateMsgLog.setWxParameter(JsonUtils.bean2Json(wxTemplateSend));
         int count = wechatTemplateMsgLogMapper.saveWechatTemplateMsgLog(wechatTemplateMsgLog);
         return count > 0 ? MobileHttpCode.HTTP_NORMAL : MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED;
     }

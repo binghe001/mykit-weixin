@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="io.mykit.weixin.mapper.WechatTemplateMsgLogMapper">
+<mapper namespace="io.mykit.weixin.mapper.WechatKfaccountTextMsgLogMapper">
 
-    <!--保存微信模板消息记录-->
-  <insert id="saveWechatTemplateMsgLog">
-     insert into mp_wechat_template_msg_log (
+    <!--保存客服文本消息记录-->
+  <insert id="saveWechatKfaccountTextMsgLog">
+     insert into mp_wechat_kfaccount_text_msg_log (
         id,
         t_create_time,
         t_create_date,
@@ -14,16 +14,11 @@
         t_month_sharding,
         t_last_modify_time,
 
-        template_id,
-        t_type,
-        wechat_template_id,
-        t_parameter,
         account_id,
-        t_result,
-        t_title,
-        t_content,
         open_id,
-        wx_parameter
+        t_parameter,
+        wx_parameter,
+        t_result
      )
     values (
       #{id},
@@ -34,16 +29,11 @@
       #{monthSharding},
       #{lastModifyTime},
 
-      #{templateId},
-      #{type},
-      #{wechatTemplateId},
-      #{parameter},
       #{accountId},
-      #{result},
-      #{title},
-      #{content},
       #{openId},
-      #{wxParameter}
+      #{parameter},
+      #{wxParameter},
+      #{result}
     )
   </insert>
 
