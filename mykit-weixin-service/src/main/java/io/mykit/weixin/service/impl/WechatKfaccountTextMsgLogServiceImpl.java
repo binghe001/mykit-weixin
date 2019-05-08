@@ -64,7 +64,7 @@ public class WechatKfaccountTextMsgLogServiceImpl extends WechatCacheServiceImpl
             return MobileHttpCode.HTTP_NOT_GET_WECHAT_ACCOUNT;
         }
         //是否有权限发送模板消息,没有权限发送，直接返回状态码
-        if(StringUtils.isEmpty(wechatAccount.getSendTemplate()) || WechatConstants.SEND_NO.equals(wechatAccount.getSendTemplate())){
+        if(StringUtils.isEmpty(wechatAccount.getSendCustom()) || WechatConstants.SEND_NO.equals(wechatAccount.getSendCustom())){
             return MobileHttpCode.HTTP_NO_LIMIT_TO_SEND_TEMPLATE;
         }
         String openId = wechatUserInfoService.getOpenId(wechatKfaccountTextMsgParams.getForeignSystemId(), wechatKfaccountTextMsgParams.getForeignSystem(), wechatKfaccountTextMsgParams.getForeignId(), wechatKfaccountTextMsgParams.getForeignType());
