@@ -15,11 +15,19 @@
  */
 package io.mykit.weixin.controller;
 
+import io.mykit.wechat.utils.common.StringUtils;
+import io.mykit.wechat.utils.json.JsonUtils;
+import io.mykit.weixin.constants.code.MobileHttpCode;
+import io.mykit.weixin.params.WechatKfaccountTextMsgParams;
 import io.mykit.weixin.service.WechatKfaccountTextMsgLogService;
+import io.mykit.weixin.utils.resp.helper.ResponseHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author liuyazhuang
@@ -33,5 +41,25 @@ public class WechatKfaccountController {
     @Resource
     private WechatKfaccountTextMsgLogService wechatKfaccountMsgLogService;
 
-
+    /**
+     * 发送微信客服文本消息
+     * @param parameter
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/msg/text/send", method = RequestMethod.POST)
+    public void sendWechatKfaccountTextMsg(String parameter, HttpServletRequest request, HttpServletResponse response){
+        try{
+            if(StringUtils.isEmpty(parameter)){
+                ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_PARAMETER_INVALID, response);
+                return;
+            }
+            WechatKfaccountTextMsgParams params = JsonUtils.json2Bean(parameter, WechatKfaccountTextMsgParams.class);
+            int code = wechatKfaccountMsgLogService.sendWechatKfaccountTextMsg(params);
+            ResponseHelper.responseMessage(null, false, true, code, response);
+        }catch (Exception e){
+            e.printStackTrace();
+            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_SERVER_EXCEPTION, response);
+        }
+    }
 }
