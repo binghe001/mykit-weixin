@@ -36,6 +36,11 @@ public class WechatTemplateMsgLog extends MonthShardingEntity {
     private String accountId;
 
     /**
+     * 接收模板消息的微信用户openId
+     */
+    private String openId;
+
+    /**
      * 微信模板id
      */
     private String templateId;

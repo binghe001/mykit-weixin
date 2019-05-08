@@ -147,7 +147,9 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
             return MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID;
         }
         WxTemplateDataSend wxTemplateDataSend = new WxTemplateDataSend();
-        wxTemplateDataSend.setFirst(new WxTemplateDataItemSend(wechatTemplateParams.getFirst(), "#173177"));
+        if(!StringUtils.isEmpty(wechatTemplateParams.getFirst())){
+            wxTemplateDataSend.setFirst(new WxTemplateDataItemSend(wechatTemplateParams.getFirst(), "#173177"));
+        }
         if(wechatTemplateParams.getKeywordCount() >= 1){
             wxTemplateDataSend.setKeyword1(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword1(), "#173177"));
         }
@@ -187,8 +189,9 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
         if(wechatTemplateParams.getKeywordCount() >= 10){
             wxTemplateDataSend.setKeyword10(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword10(), "#173177"));
         }
-
-        wxTemplateDataSend.setRemark(new WxTemplateDataItemSend(wechatTemplateParams.getRemark(), "#173177"));
+        if(!StringUtils.isEmpty(wechatTemplateParams.getRemark())){
+            wxTemplateDataSend.setRemark(new WxTemplateDataItemSend(wechatTemplateParams.getRemark(), "#173177"));
+        }
 
         WxTemplateSend wxTemplateSend = new WxTemplateSend();
         wxTemplateSend.setData(wxTemplateDataSend);
@@ -208,6 +211,7 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
         wechatTemplateMsgLog.setParameter(JsonUtils.bean2Json(wechatTemplateParams));
         wechatTemplateMsgLog.setTitle(wechatTemplate.getTitle());
         wechatTemplateMsgLog.setContent(wechatTemplate.getContent());
+        wechatTemplateMsgLog.setOpenId(openId);
         wechatTemplateMsgLog.setResult(result);
         int count = wechatTemplateMsgLogMapper.saveWechatTemplateMsgLog(wechatTemplateMsgLog);
         return count > 0 ? MobileHttpCode.HTTP_NORMAL : MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED;

@@ -21,7 +21,8 @@
         account_id,
         t_result,
         t_title,
-        t_content
+        t_content,
+        open_id
      )
     values (
       #{id},
@@ -39,7 +40,8 @@
       #{accountId},
       #{result},
       #{title},
-      #{content}
+      #{content},
+      #{openId}
     )
   </insert>
 
