@@ -79,7 +79,7 @@ public class WechatKfaccountTextMsgLogServiceImpl extends WechatCacheServiceImpl
         wxKfaccountTextMessage.setMsgtype(WxConstants.TYPE_TEXT);
         wxKfaccountTextMessage.setTouser(openId);
         //发送微信客服消息
-        String ret = WxKfaccountHandler.sendWxKfaccountTextMessage(wechatAccount.getAppId(), wechatAccount.getAppId(), wxKfaccountTextMessage);
+        String ret = WxKfaccountHandler.sendWxKfaccountTextMessage(wechatAccount.getAppId(), wechatAccount.getAppSecret(), wxKfaccountTextMessage);
 
         //保存记录
         WechatKfaccountTextMsgLog wechatKfaccountTextMsgLog = new WechatKfaccountTextMsgLog();
