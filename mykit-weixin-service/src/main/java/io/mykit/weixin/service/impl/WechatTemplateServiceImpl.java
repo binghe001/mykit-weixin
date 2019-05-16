@@ -137,7 +137,7 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
             return MobileHttpCode.HTTP_NO_LIMIT_TO_SEND_TEMPLATE;
         }
         //获取微信模板消息
-        logger.info(JsonUtils.bean2Json(wechatAccount));
+        //logger.info(JsonUtils.bean2Json(wechatAccount));
         WechatTemplate wechatTemplate = this.getWechatTemplateByType(wechatTemplateParams.getTemplatetType(), wechatAccount.getId());
         if(wechatTemplate == null){
             logger.info("未获取到微信消息模板....");
