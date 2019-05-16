@@ -55,6 +55,7 @@ public class WechatUserInfoServiceImpl extends WechatCacheServiceImpl implements
     @Transactional
     public int saveWechatUserInfo(String code, String foreignSystemId, String foreignSystem, String foreignId, String foreignType) throws Exception {
         int count = 0;
+        //查询当前用户是否绑定过openId
         String openId = this.getOpenId(foreignSystemId, foreignSystem, foreignId, foreignType);
         //微信openId为空，执行保存操作
         if(StringUtils.isEmpty(openId)){
@@ -71,23 +72,30 @@ public class WechatUserInfoServiceImpl extends WechatCacheServiceImpl implements
                 if(!StringUtils.isEmpty(ret)){
                     WxOAuth2AccessToken wxOAuth2AccessToken = JsonUtils.json2Bean(ret, WxOAuth2AccessToken.class);
                     if (wxOAuth2AccessToken != null && !StringUtils.isEmpty(wxOAuth2AccessToken.getOpenid())){
-                        WechatUserInfo wechatUserInfo = new WechatUserInfo();
-                        wechatUserInfo.setForeignSystemId(foreignSystemId);
-                        wechatUserInfo.setForeignSystem(foreignSystem);
-                        wechatUserInfo.setSlaveUser(wechatAccount.getSlaveUser());
-                        wechatUserInfo.setOpenId(wxOAuth2AccessToken.getOpenid());
-                        wechatUserInfo.setForeignId(foreignId);
-                        wechatUserInfo.setForeignType(foreignType);
-                        wechatUserInfo.setNickname("");
-                        wechatUserInfo.setSex(0);
-                        wechatUserInfo.setProvince("");
-                        wechatUserInfo.setCity("");
-                        wechatUserInfo.setCountry("");
-                        wechatUserInfo.setHeadimgurl("");
-                        wechatUserInfo.setPrivilege("");
-                        wechatUserInfo.setUnionid("");
-                        logger.info(JsonUtils.bean2Json(wechatUserInfo));
-                        count = wechatUserInfoMapper.saveWechatUserInfo(wechatUserInfo);
+                        //获取到了openId，查询当前openId是否被其他用户绑定过
+                        String id = wechatUserInfoMapper.getId(foreignSystemId, foreignSystem, wxOAuth2AccessToken.getOpenid(), foreignType);
+                        //没有被其他人绑定过，则直接保存相关数据
+                        if(StringUtils.isEmpty(id)){
+                            WechatUserInfo wechatUserInfo = new WechatUserInfo();
+                            wechatUserInfo.setForeignSystemId(foreignSystemId);
+                            wechatUserInfo.setForeignSystem(foreignSystem);
+                            wechatUserInfo.setSlaveUser(wechatAccount.getSlaveUser());
+                            wechatUserInfo.setOpenId(wxOAuth2AccessToken.getOpenid());
+                            wechatUserInfo.setForeignId(foreignId);
+                            wechatUserInfo.setForeignType(foreignType);
+                            wechatUserInfo.setNickname("");
+                            wechatUserInfo.setSex(0);
+                            wechatUserInfo.setProvince("");
+                            wechatUserInfo.setCity("");
+                            wechatUserInfo.setCountry("");
+                            wechatUserInfo.setHeadimgurl("");
+                            wechatUserInfo.setPrivilege("");
+                            wechatUserInfo.setUnionid("");
+                            count = wechatUserInfoMapper.saveWechatUserInfo(wechatUserInfo);
+                        }else{
+                            //被其他人绑定过，更新绑定信息
+                            count = wechatUserInfoMapper.updateForeignId(foreignId, id);
+                        }
                     }
                 }
             }

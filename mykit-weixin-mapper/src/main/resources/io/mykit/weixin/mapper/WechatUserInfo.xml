@@ -110,6 +110,22 @@
               and foreign_type = #{foreignType}
     </select>
 
+    <!--获取记录条目的id-->
+    <select id="getId" resultType="string">
+        select
+              id
+        from mp_wechat_user_info
+        where foreign_system_id = #{foreignSystemId}
+              and foreign_system = #{foreignSystem}
+              and open_id = #{openId}
+              and foreign_type = #{foreignType}
+    </select>
+
+    <!--更新foreignId-->
+    <update id="updateForeignId">
+        update mp_wechat_user_info set foreign_id = #{foreignId} where id = #{id}
+    </update>
+
     <!--获取指定用户的微信openId-->
     <select id="getOpenId" resultType="string">
         select
