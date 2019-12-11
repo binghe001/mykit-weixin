@@ -13,43 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.mykit.weixin.entity;
+package io.mykit.weixin.service;
 
-import io.mykit.weixin.entity.base.MonthShardingEntity;
-import lombok.Data;
+import io.mykit.weixin.service.base.WechatCacheService;
 
 /**
- * @author liuyazhuang
+ * @author binghe
  * @version 1.0.0
- * @date 2019/5/8
- * @description 发送微信客服消息记录表
+ * @description 微信客服消息消息发送失败处理
  */
-@Data
-public class WechatKfaccountTextMsgLog extends WechatKfaccountMsgLog {
-    private static final long serialVersionUID = 5361673834973377809L;
+public interface WechatKfaccountTextMsgFailedService extends WechatCacheService {
+
+    /**
+     * 保存模板消息发送失败记录
+     */
+    int saveWechatKfaccountTextMsgFailed(String parameter, Integer errCode, String errMsg, Integer maxRetryCount, Integer currentRetryCount);
 
 
     /**
-     * 其他业务系统传递的所有参数
+     * 处理发送失败的记录
      */
-    private String parameter;
-
-    /**
-     * 发送模板消息构造的微信参数
-     */
-    private String wxParameter;
-
-    /**
-     * 结果
-     */
-    private String result;
-
-    /**
-     * 是否重试
-     * retry_true:是
-     * retry_false:否
-     */
-    private String retry = "retry_false";
-
-
+    void handlerWechatKfaccountTextMsgFailed(int hour);
 }

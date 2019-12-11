@@ -266,6 +266,23 @@ CREATE TABLE `mp_wechat_template_msg_failed` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='模板消息发送失败记录，需要重试的';
 
 
+alter table mp_wechat_kfaccount_text_msg_log add column t_retry varchar (30) not null default 'retry_false' comment '是否是重试的结果retry_false:否 retry_true:是';
+
+CREATE TABLE `mp_wechat_kfaccount_text_msg_failed` (
+  `id` varchar(32) NOT NULL COMMENT '默认的id',
+  `t_create_time` varchar(30) DEFAULT '' COMMENT '创建的时间yyyy-MM-dd HH:mm:ss',
+  `t_create_date` varchar(20) DEFAULT '' COMMENT '创建日期yyyy-MM-dd',
+  `t_month_sharding` varchar(20) DEFAULT '' COMMENT '分片字段yyyyMM',
+  `t_status` int(2) DEFAULT '1' COMMENT '状态 1：正常 0：删除',
+  `t_remark` varchar(255) DEFAULT '' COMMENT '备注',
+  `t_last_modify_time` varchar(30) DEFAULT '' COMMENT '最后修改时间 yyyy-MM-dd HH:mm:ss',
+  `t_parameter` text COMMENT '其他业务系统传递的所有参数',
+  `err_msg` varchar(1024) DEFAULT '' COMMENT '微信开发者账号表id',
+  `err_code` int(10) DEFAULT '0' COMMENT '状态码',
+  `max_retry_count` int(10) DEFAULT '0' COMMENT '最大重试次数',
+  `current_retry_count` int(10) DEFAULT '0' COMMENT '当前重试次数',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='微信客服消息发送失败记录，需要重试的';
 
 
 

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.mykit.weixin.mapper.WechatKfaccountTextMsgFailedMapper">
+
+    <!--保存微信模板消息记录-->
+  <insert id="saveWechatKfaccountTextMsgFailed">
+     insert into mp_wechat_kfaccount_text_msg_failed (
+        id,
+        t_create_time,
+        t_create_date,
+        t_status,
+        t_remark,
+        t_month_sharding,
+        t_last_modify_time,
+
+        t_parameter,
+        err_msg,
+        err_code,
+        max_retry_count,
+        current_retry_count
+     )
+    values (
+      #{id},
+      #{createTime},
+      #{createDate},
+      #{status},
+      #{remark},
+      #{monthSharding},
+      #{lastModifyTime},
+
+      #{parameter},
+      #{errMsg},
+      #{errCode},
+      #{maxRetryCount},
+      #{currentRetryCount}
+    )
+  </insert>
+
+    <!--数据库字段与实体类字段的映射关系-->
+    <resultMap id="wechatKfaccountTextMsgFailedMap" type="WechatKfaccountTextMsgFailed">
+        <id property="id" column="id"/>
+        <result property="createTime" column="t_create_time"/>
+        <result property="createDate" column="t_create_date"/>
+        <result property="status" column="t_status"/>
+        <result property="remark" column="t_remark"/>
+        <result property="monthSharding" column="t_month_sharding"/>
+        <result property="lastModifyTime" column="t_last_modify_time"/>
+
+        <result property="parameter" column="t_parameter"/>
+        <result property="errMsg" column="err_msg"/>
+        <result property="errCode" column="err_code"/>
+        <result property="maxRetryCount" column="max_retry_count"/>
+        <result property="currentRetryCount" column="current_retry_count"/>
+    </resultMap>
+
+    <!--查询列表-->
+    <select id="getWechatKfaccountTextMsgFailedListByTime" resultMap="wechatKfaccountTextMsgFailedMap">
+         select id,
+              t_create_time,
+              t_create_date,
+              t_status,
+              t_remark,
+              t_month_sharding,
+              t_last_modify_time,
+              t_parameter,
+              err_msg,
+              err_code,
+              max_retry_count,
+              current_retry_count
+        from mp_wechat_kfaccount_text_msg_failed
+        where t_create_date &gt;= #{startDate}
+        and t_create_date &lt;= #{endDate}
+        and max_retry_count &gt; current_retry_count
+    </select>
+
+    <!--物理删除记录-->
+    <delete id="deleteWechatKfaccountTextMsgFailed">
+        delete from mp_wechat_kfaccount_text_msg_failed where id = #{id}
+    </delete>
+
+    <!--更新重试次数-->
+    <update id="updateCurrentRetryCount">
+       update mp_wechat_kfaccount_text_msg_failed set current_retry_count = #{currentRetryCount}, t_last_modify_time = #{lastModifyTime} where id = #{id}
+    </update>
+</mapper>

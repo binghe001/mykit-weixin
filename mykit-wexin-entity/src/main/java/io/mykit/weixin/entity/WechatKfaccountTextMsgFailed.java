@@ -19,15 +19,13 @@ import io.mykit.weixin.entity.base.MonthShardingEntity;
 import lombok.Data;
 
 /**
- * @author liuyazhuang
+ * @author binghe
  * @version 1.0.0
- * @date 2019/5/8
- * @description 发送微信客服消息记录表
+ * @description 模板消息发送失败记录，需要重试的
  */
 @Data
-public class WechatKfaccountTextMsgLog extends WechatKfaccountMsgLog {
-    private static final long serialVersionUID = 5361673834973377809L;
-
+public class WechatKfaccountTextMsgFailed extends MonthShardingEntity {
+    private static final long serialVersionUID = -5431497875499353970L;
 
     /**
      * 其他业务系统传递的所有参数
@@ -35,21 +33,23 @@ public class WechatKfaccountTextMsgLog extends WechatKfaccountMsgLog {
     private String parameter;
 
     /**
-     * 发送模板消息构造的微信参数
+     * 状态码
      */
-    private String wxParameter;
+    private Integer errCode;
 
     /**
-     * 结果
+     * 错误信息
      */
-    private String result;
+    private String errMsg;
 
     /**
-     * 是否重试
-     * retry_true:是
-     * retry_false:否
+     * 最大重试次数
      */
-    private String retry = "retry_false";
+    private Integer maxRetryCount;
 
+    /**
+     * 当前重试次数
+     */
+    private Integer currentRetryCount;
 
 }

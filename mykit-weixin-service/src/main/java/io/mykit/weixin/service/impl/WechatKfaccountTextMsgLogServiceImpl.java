@@ -15,6 +15,7 @@
  */
 package io.mykit.weixin.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import io.mykit.wechat.mp.beans.json.kfaccount.message.WxKfaccountTextMessage;
 import io.mykit.wechat.mp.beans.json.kfaccount.message.WxKfaccountTextMessageItem;
 import io.mykit.wechat.mp.http.handler.kfaccount.WxKfaccountHandler;
@@ -25,13 +26,13 @@ import io.mykit.weixin.constants.code.MobileHttpCode;
 import io.mykit.weixin.constants.wechat.WechatConstants;
 import io.mykit.weixin.entity.WechatAccount;
 import io.mykit.weixin.entity.WechatKfaccountTextMsgLog;
-import io.mykit.weixin.entity.WechatTemplate;
 import io.mykit.weixin.mapper.WechatKfaccountTextMsgLogMapper;
 import io.mykit.weixin.params.WechatKfaccountTextMsgParams;
 import io.mykit.weixin.service.WechatAccountService;
 import io.mykit.weixin.service.WechatKfaccountTextMsgLogService;
 import io.mykit.weixin.service.WechatUserInfoService;
 import io.mykit.weixin.service.impl.base.WechatCacheServiceImpl;
+import io.mykit.weixin.utils.exception.MyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -61,17 +62,16 @@ public class WechatKfaccountTextMsgLogServiceImpl extends WechatCacheServiceImpl
         WechatAccount wechatAccount = wechatAccountService.getWechatAccountByForeignIdAndSystem(wechatKfaccountTextMsgParams.getForeignSystemId(), wechatKfaccountTextMsgParams.getForeignSystem());
         if(wechatAccount == null){
             logger.info("未获取到微信开发者账号信息....");
-            return MobileHttpCode.HTTP_NOT_GET_WECHAT_ACCOUNT;
+            throw new MyException("未获取到微信开发者账号信息", MobileHttpCode.HTTP_NOT_GET_WECHAT_ACCOUNT);
         }
         //是否有权限发送模板消息,没有权限发送，直接返回状态码
         if(StringUtils.isEmpty(wechatAccount.getSendCustom()) || WechatConstants.SEND_NO.equals(wechatAccount.getSendCustom())){
-            return MobileHttpCode.HTTP_NO_LIMIT_TO_SEND_TEMPLATE;
+            throw new MyException("没有权限发送", MobileHttpCode.HTTP_NO_LIMIT_TO_SEND_TEMPLATE);
         }
         String openId = wechatUserInfoService.getOpenId(wechatKfaccountTextMsgParams.getForeignSystemId(), wechatKfaccountTextMsgParams.getForeignSystem(), wechatKfaccountTextMsgParams.getForeignId(), wechatKfaccountTextMsgParams.getForeignType());
         if(StringUtils.isEmpty(openId)){
             logger.info("未获取到微信openid....");
-            logger.info(JsonUtils.bean2Json(wechatKfaccountTextMsgParams));
-            return MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID;
+            throw new MyException("未获取到微信openid", MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID);
         }
         WxKfaccountTextMessageItem wxKfaccountTextMessageItem = new WxKfaccountTextMessageItem();
         wxKfaccountTextMessageItem.setContent(wechatKfaccountTextMsgParams.getContent());
@@ -80,8 +80,24 @@ public class WechatKfaccountTextMsgLogServiceImpl extends WechatCacheServiceImpl
         wxKfaccountTextMessage.setMsgtype(WxConstants.TYPE_TEXT);
         wxKfaccountTextMessage.setTouser(openId);
         //发送微信客服消息
-        String ret = WxKfaccountHandler.sendWxKfaccountTextMessage(wechatAccount.getAppId(), wechatAccount.getAppSecret(), wxKfaccountTextMessage);
-
+        String ret = "";
+        try{
+            ret = WxKfaccountHandler.sendWxKfaccountTextMessage(wechatAccount.getAppId(), wechatAccount.getAppSecret(), wxKfaccountTextMessage);
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new MyException("服务端异常", MobileHttpCode.HTTP_SERVER_EXCEPTION);
+        }
+        if(StringUtils.isEmpty(ret)){
+            throw new MyException("发送微信客服消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+        }
+        JSONObject jsonObject = JSONObject.parseObject(ret);
+        if (!jsonObject.containsKey(WechatConstants.WEHCAT_ERROR_CODE)){
+            throw new MyException("发送微信客服消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+        }
+        Integer wechatCode = jsonObject.getInteger(WechatConstants.WEHCAT_ERROR_CODE);
+        if(wechatCode == null || wechatCode != WechatConstants.WECHAT_CODE_NORMAL){
+            throw new MyException("发送微信客服消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+        }
         //保存记录
         WechatKfaccountTextMsgLog wechatKfaccountTextMsgLog = new WechatKfaccountTextMsgLog();
         wechatKfaccountTextMsgLog.setParameter(JsonUtils.bean2Json(wechatKfaccountTextMsgParams));
@@ -89,7 +105,7 @@ public class WechatKfaccountTextMsgLogServiceImpl extends WechatCacheServiceImpl
         wechatKfaccountTextMsgLog.setResult(ret);
         wechatKfaccountTextMsgLog.setAccountId(wechatAccount.getId());
         wechatKfaccountTextMsgLog.setOpenId(openId);
-        int count = wechatKfaccountTextMsgLogMapper.saveWechatKfaccountTextMsgLog(wechatKfaccountTextMsgLog);
-        return count > 0 ? MobileHttpCode.HTTP_NORMAL : MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED;
+        wechatKfaccountTextMsgLog.setRetry(wechatKfaccountTextMsgParams.getRetry());
+        return wechatKfaccountTextMsgLogMapper.saveWechatKfaccountTextMsgLog(wechatKfaccountTextMsgLog);
     }
 }

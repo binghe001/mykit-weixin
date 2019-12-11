@@ -16,6 +16,7 @@
 package io.mykit.weixin.scheduler;
 
 import io.mykit.weixin.constants.wechat.WechatConstants;
+import io.mykit.weixin.service.WechatKfaccountTextMsgFailedService;
 import io.mykit.weixin.service.WechatTemplateMsgFailedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,8 @@ public class WechatMsgFailedScheduler {
 
     @Resource
     private WechatTemplateMsgFailedService wechatTemplateMsgFailedService;
+    @Resource
+    private WechatKfaccountTextMsgFailedService wechatKfaccountTextMsgFailedService;
     /**
      * 每隔5分钟执行一次
      */
@@ -44,5 +47,15 @@ public class WechatMsgFailedScheduler {
         logger.info("处理微信模板消息发送失败记录开始...");
         wechatTemplateMsgFailedService.handlerWechatTemplateMsgFailed(WechatConstants.BEFORE_DAY);
         logger.info("处理微信模板消息发送失败记录结束...");
+    }
+
+    /**
+     * 每隔5分钟执行一次
+     */
+    @Scheduled(cron="0 0/5 * * * ?")
+    public void handlerWechatKfaccountTextMsgFailed(){
+        logger.info("处理微信客服消息发送失败记录开始...");
+        wechatKfaccountTextMsgFailedService.handlerWechatKfaccountTextMsgFailed(WechatConstants.BEFORE_DAY);
+        logger.info("处理微信客服消息发送失败记录结束...");
     }
 }

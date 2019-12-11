@@ -30,4 +30,9 @@ public class WechatKfaccountTextMsgParams extends WechatKfaccountMsgParams {
      * 发送的消息内容
      */
     private String content;
+
+    /**
+     * 是否重试，默认为否
+     */
+    private String retry = "retry_false";
 }
