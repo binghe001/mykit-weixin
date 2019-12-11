@@ -81,6 +81,6 @@
 
     <!--更新重试次数-->
     <update id="updateCurrentRetryCount">
-       update mp_wechat_template_msg_failed set current_retry_count = current_retry_count + 1 where id = #{id}
+       update mp_wechat_template_msg_failed set current_retry_count = current_retry_count + 1, t_last_modify_time = #{lastModifyTime} where id = #{id}
     </update>
 </mapper>
