@@ -20,7 +20,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author liuyazhuang
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication
 @ComponentScan(basePackages = {"io.mykit.weixin" })
 @MapperScan(value = {"io.mykit.weixin.mapper"})
-@EnableTransactionManagement
 @EnableScheduling
 public class MykitWeixinCoreApplication {
 

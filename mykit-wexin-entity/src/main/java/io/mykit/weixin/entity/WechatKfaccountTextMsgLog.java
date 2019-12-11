@@ -43,4 +43,6 @@ public class WechatKfaccountTextMsgLog extends WechatKfaccountMsgLog {
      * 结果
      */
     private String result;
+
+
 }
