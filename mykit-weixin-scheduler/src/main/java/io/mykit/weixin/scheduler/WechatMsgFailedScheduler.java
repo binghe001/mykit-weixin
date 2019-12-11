@@ -30,9 +30,9 @@ import javax.annotation.Resource;
  * @description 定时处理模板消息发送失败的记录
  */
 @Component
-public class WechatTemplateMsgFailedScheduler {
+public class WechatMsgFailedScheduler {
 
-    private final Logger logger = LoggerFactory.getLogger(WechatTemplateMsgFailedScheduler.class);
+    private final Logger logger = LoggerFactory.getLogger(WechatMsgFailedScheduler.class);
 
     @Resource
     private WechatTemplateMsgFailedService wechatTemplateMsgFailedService;
