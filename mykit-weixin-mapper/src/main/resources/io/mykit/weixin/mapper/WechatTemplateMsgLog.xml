@@ -23,7 +23,8 @@
         t_title,
         t_content,
         open_id,
-        wx_parameter
+        wx_parameter,
+        t_retry
      )
     values (
       #{id},
@@ -43,7 +44,8 @@
       #{title},
       #{content},
       #{openId},
-      #{wxParameter}
+      #{wxParameter},
+      #{retry}
     )
   </insert>
 

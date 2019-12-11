@@ -18,8 +18,11 @@ package io.mykit.weixin.controller;
 import io.mykit.wechat.utils.common.StringUtils;
 import io.mykit.wechat.utils.json.JsonUtils;
 import io.mykit.weixin.constants.code.MobileHttpCode;
+import io.mykit.weixin.constants.wechat.WechatConstants;
 import io.mykit.weixin.params.WechatTemplateParams;
+import io.mykit.weixin.service.WechatTemplateMsgFailedService;
 import io.mykit.weixin.service.WechatTemplateService;
+import io.mykit.weixin.utils.exception.MyException;
 import io.mykit.weixin.utils.resp.helper.ResponseHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +46,8 @@ public class WechatTemplateController {
     private final Logger logger = LoggerFactory.getLogger(WechatTemplateController.class);
     @Resource
     private WechatTemplateService wechatTemplateService;
+    @Resource
+    private WechatTemplateMsgFailedService wechatTemplateMsgFailedService;
     /**
      * 发送模板消息
      * @param parameter
@@ -80,11 +85,18 @@ public class WechatTemplateController {
                 return;
             }
             WechatTemplateParams params = JsonUtils.json2Bean(parameter, WechatTemplateParams.class);
-            int code = wechatTemplateService.sendWechatTemplateMessageV2(params);
-            ResponseHelper.responseMessage(null, false, true, code, response);
+            wechatTemplateService.sendWechatTemplateMessage(params);
+            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_NORMAL, response);
+        }catch (MyException e){
+            e.printStackTrace();
+            ResponseHelper.responseMessage(null, false, true, e.getCode(), response);
+            //保存失败记录
+            wechatTemplateMsgFailedService.saveWechatTemplateMsgFailed(parameter, e.getCode(), e.getMessage(), WechatConstants.MAX_RETRY_COUNT, WechatConstants.CURRENT_RETRY_INIT_COUNT);
         }catch (Exception e){
             e.printStackTrace();
             ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_SERVER_EXCEPTION, response);
+            //保存失败记录
+            wechatTemplateMsgFailedService.saveWechatTemplateMsgFailed(parameter,  MobileHttpCode.HTTP_SERVER_EXCEPTION, e.getMessage(), WechatConstants.MAX_RETRY_COUNT, WechatConstants.CURRENT_RETRY_INIT_COUNT);
         }
     }
 }

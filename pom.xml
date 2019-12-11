@@ -19,6 +19,7 @@
         <module>mykit-weixin-controller</module>
         <module>mykit-weixin-gateway</module>
         <module>mykit-weixin-db</module>
+        <module>mykit-weixin-scheduler</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,6 +30,7 @@
         <wechat.sdk.version>1.0.0-SNAPSHOT</wechat.sdk.version>
         <pagehelper.version>1.1.2</pagehelper.version>
         <memcached.version>2.6.6</memcached.version>
+        <lombok.version>1.16.10</lombok.version>
     </properties>
 
     <parent>
@@ -38,7 +40,6 @@
     </parent>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -105,6 +106,12 @@
             <groupId>io.mykit.wechat.sdk</groupId>
             <artifactId>mykit-wechat-core</artifactId>
             <version>${wechat.sdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
         </dependency>
 
     </dependencies>

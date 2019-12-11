@@ -44,4 +44,6 @@ public class WechatTemplateParams extends WechatBaseParams {
     private String templatetType = "";
     //模板跳转链接
     private String url = "";
+    //默认不重试
+    private String retry = "retry_false";
 }

@@ -15,6 +15,7 @@
  */
 package io.mykit.weixin.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import io.mykit.wechat.mp.beans.json.template.WxTemplateDataItemSend;
 import io.mykit.wechat.mp.beans.json.template.send.WxTemplateDataSend;
 import io.mykit.wechat.mp.beans.json.template.send.WxTemplateSend;
@@ -33,6 +34,7 @@ import io.mykit.weixin.service.WechatAccountService;
 import io.mykit.weixin.service.WechatTemplateService;
 import io.mykit.weixin.service.WechatUserInfoService;
 import io.mykit.weixin.service.impl.base.WechatCacheServiceImpl;
+import io.mykit.weixin.utils.exception.MyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -74,79 +76,27 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int sendWechatTemplateMessage(WechatTemplateParams wechatTemplateParams) throws Exception {
+    public int sendWechatTemplateMessage(WechatTemplateParams wechatTemplateParams) throws MyException {
         WechatAccount wechatAccount = wechatAccountService.getWechatAccountByForeignIdAndSystem(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem());
         if(wechatAccount == null){
             logger.info("未获取到微信开发者账号信息....");
-            return MobileHttpCode.HTTP_NOT_GET_WECHAT_ACCOUNT;
-        }
-        //获取微信模板消息
-        logger.info(JsonUtils.bean2Json(wechatAccount));
-        WechatTemplate wechatTemplate = this.getWechatTemplateByType(wechatTemplateParams.getTemplatetType(), wechatAccount.getId());
-        if(wechatTemplate == null){
-            logger.info("未获取到微信消息模板....");
-            return MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE;
-        }
-        String openId = wechatUserInfoService.getOpenId(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem(), wechatTemplateParams.getForeignId(), wechatTemplateParams.getForeignType());
-        if(StringUtils.isEmpty(openId)){
-            logger.info("未获取到微信openid....");
-            return MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID;
-        }
-        WxTemplateDataSend wxTemplateDataSend = new WxTemplateDataSend();
-        wxTemplateDataSend.setKeyword1(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword1(), "#173177"));
-        wxTemplateDataSend.setKeyword2(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword2(), "#173177"));
-        wxTemplateDataSend.setKeyword3(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword3(), "#173177"));
-        wxTemplateDataSend.setKeyword4(new WxTemplateDataItemSend(wechatTemplateParams.getKeyword4(), "#173177"));
-        wxTemplateDataSend.setRemark(new WxTemplateDataItemSend(wechatTemplateParams.getRemark(), "#173177"));
-
-        WxTemplateSend wxTemplateSend = new WxTemplateSend();
-        wxTemplateSend.setData(wxTemplateDataSend);
-        wxTemplateSend.setTemplate_id(wechatTemplate.getWechatTemplateId());
-        wxTemplateSend.setTouser(openId);
-        if(!StringUtils.isEmpty(wechatTemplateParams.getUrl())){
-            wxTemplateSend.setUrl(wechatTemplateParams.getUrl());
-        }
-        //发送模板消息
-        String result = WxTemplateSendHandler.sendTemplate(wechatAccount.getAppId(), wechatAccount.getAppSecret(), wxTemplateSend);
-
-        WechatTemplateMsgLog wechatTemplateMsgLog = new WechatTemplateMsgLog();
-        wechatTemplateMsgLog.setAccountId(wechatAccount.getId());
-        wechatTemplateMsgLog.setTemplateId(wechatTemplate.getId());
-        wechatTemplateMsgLog.setType(wechatTemplate.getType());
-        wechatTemplateMsgLog.setWechatTemplateId(wechatTemplate.getWechatTemplateId());
-        wechatTemplateMsgLog.setParameter(JsonUtils.bean2Json(wechatTemplateParams));
-        wechatTemplateMsgLog.setTitle(wechatTemplate.getTitle());
-        wechatTemplateMsgLog.setContent(wechatTemplate.getContent());
-        wechatTemplateMsgLog.setOpenId(openId);
-        wechatTemplateMsgLog.setResult(result);
-        wechatTemplateMsgLog.setWxParameter(JsonUtils.bean2Json(wxTemplateSend));
-        int count = wechatTemplateMsgLogMapper.saveWechatTemplateMsgLog(wechatTemplateMsgLog);
-        return count > 0 ? MobileHttpCode.HTTP_NORMAL : MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public int sendWechatTemplateMessageV2(WechatTemplateParams wechatTemplateParams) throws Exception {
-        WechatAccount wechatAccount = wechatAccountService.getWechatAccountByForeignIdAndSystem(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem());
-        if(wechatAccount == null){
-            logger.info("未获取到微信开发者账号信息....");
-            return MobileHttpCode.HTTP_NOT_GET_WECHAT_ACCOUNT;
+            throw new MyException("未获取到微信开发者账号信息", MobileHttpCode.HTTP_NOT_GET_WECHAT_ACCOUNT);
         }
         //是否有权限发送模板消息,没有权限发送，直接返回状态码
         if(StringUtils.isEmpty(wechatAccount.getSendTemplate()) || WechatConstants.SEND_NO.equals(wechatAccount.getSendTemplate())){
-            return MobileHttpCode.HTTP_NO_LIMIT_TO_SEND_TEMPLATE;
+            logger.info("是否有权限发送模板消息,没有权限发送");
+            throw new MyException("没有权限发送模板消息", MobileHttpCode.HTTP_NO_LIMIT_TO_SEND_TEMPLATE);
         }
         //获取微信模板消息
-        //logger.info(JsonUtils.bean2Json(wechatAccount));
         WechatTemplate wechatTemplate = this.getWechatTemplateByType(wechatTemplateParams.getTemplatetType(), wechatAccount.getId());
         if(wechatTemplate == null){
             logger.info("未获取到微信消息模板....");
-            return MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE;
+            throw new MyException("未获取到微信消息模板", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE);
         }
         String openId = wechatUserInfoService.getOpenId(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem(), wechatTemplateParams.getForeignId(), wechatTemplateParams.getForeignType());
         if(StringUtils.isEmpty(openId)){
             logger.info("未获取到微信openid....");
-            return MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID;
+            throw new MyException("未获取到微信openid", MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID);
         }
         WxTemplateDataSend wxTemplateDataSend = new WxTemplateDataSend();
         if(!StringUtils.isEmpty(wechatTemplateParams.getFirst())){
@@ -203,8 +153,24 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
             wxTemplateSend.setUrl(wechatTemplateParams.getUrl());
         }
         //发送模板消息
-        String result = WxTemplateSendHandler.sendTemplate(wechatAccount.getAppId(), wechatAccount.getAppSecret(), wxTemplateSend);
-
+        String result = "";
+        try{
+            result = WxTemplateSendHandler.sendTemplate(wechatAccount.getAppId(), wechatAccount.getAppSecret(), wxTemplateSend);
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new MyException("服务端异常", MobileHttpCode.HTTP_SERVER_EXCEPTION);
+        }
+        if(StringUtils.isEmpty(result)){
+            throw new MyException("发送微信模板消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+        }
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        if (!jsonObject.containsKey(WechatConstants.WEHCAT_ERROR_CODE)){
+            throw new MyException("发送微信模板消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+        }
+        Integer wechatCode = jsonObject.getInteger(WechatConstants.WEHCAT_ERROR_CODE);
+        if(wechatCode == null || wechatCode != WechatConstants.WECHAT_CODE_NORMAL){
+            throw new MyException("发送微信模板消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+        }
         WechatTemplateMsgLog wechatTemplateMsgLog = new WechatTemplateMsgLog();
         wechatTemplateMsgLog.setAccountId(wechatAccount.getId());
         wechatTemplateMsgLog.setTemplateId(wechatTemplate.getId());
@@ -216,7 +182,7 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
         wechatTemplateMsgLog.setOpenId(openId);
         wechatTemplateMsgLog.setResult(result);
         wechatTemplateMsgLog.setWxParameter(JsonUtils.bean2Json(wxTemplateSend));
-        int count = wechatTemplateMsgLogMapper.saveWechatTemplateMsgLog(wechatTemplateMsgLog);
-        return count > 0 ? MobileHttpCode.HTTP_NORMAL : MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED;
+        wechatTemplateMsgLog.setRetry(wechatTemplateParams.getRetry());
+        return wechatTemplateMsgLogMapper.saveWechatTemplateMsgLog(wechatTemplateMsgLog);
     }
 }

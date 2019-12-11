@@ -79,4 +79,12 @@ public class WechatTemplateMsgLog extends MonthShardingEntity {
      * 结果
      */
     private String result;
+
+
+    /**
+     * 是否重试发送的
+     * retry_true:是
+     * retry_false:否
+     */
+    private String retry = "retry_false";
 }

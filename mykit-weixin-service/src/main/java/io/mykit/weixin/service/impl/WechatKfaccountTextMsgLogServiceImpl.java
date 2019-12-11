@@ -70,6 +70,7 @@ public class WechatKfaccountTextMsgLogServiceImpl extends WechatCacheServiceImpl
         String openId = wechatUserInfoService.getOpenId(wechatKfaccountTextMsgParams.getForeignSystemId(), wechatKfaccountTextMsgParams.getForeignSystem(), wechatKfaccountTextMsgParams.getForeignId(), wechatKfaccountTextMsgParams.getForeignType());
         if(StringUtils.isEmpty(openId)){
             logger.info("未获取到微信openid....");
+            logger.info(JsonUtils.bean2Json(wechatKfaccountTextMsgParams));
             return MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID;
         }
         WxKfaccountTextMessageItem wxKfaccountTextMessageItem = new WxKfaccountTextMessageItem();

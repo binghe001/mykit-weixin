@@ -18,6 +18,7 @@ package io.mykit.weixin.service;
 import io.mykit.weixin.entity.WechatTemplate;
 import io.mykit.weixin.params.WechatTemplateParams;
 import io.mykit.weixin.service.base.WechatCacheService;
+import io.mykit.weixin.utils.exception.MyException;
 
 /**
  * @author liuyazhuang
@@ -40,13 +41,5 @@ public interface WechatTemplateService extends WechatCacheService {
      * @param wechatTemplateParams 发送模板消息的参数
      * @return 发送结果状态码
      */
-    int sendWechatTemplateMessage(WechatTemplateParams wechatTemplateParams) throws Exception;
-
-
-    /**
-     * 发送模板消息
-     * @param wechatTemplateParams 发送模板消息的参数
-     * @return 发送结果状态码
-     */
-    int sendWechatTemplateMessageV2(WechatTemplateParams wechatTemplateParams) throws Exception;
+    int sendWechatTemplateMessage(WechatTemplateParams wechatTemplateParams) throws MyException;
 }

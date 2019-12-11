@@ -78,4 +78,37 @@ public class WechatConstants {
      */
     public static final String SEND_NO = "send_no";
 
+    /**
+     * 重试的结果
+     */
+    public static final String RETRY_TRUE = "retry_true";
+    /**
+     * 不是重试的结果
+     */
+    public static final String RETRY_FALSE = "retry_false";
+
+    /**
+     * 微信状态码
+     */
+    public static final String WEHCAT_ERROR_CODE = "errcode";
+
+    /**
+     * 微信正常状态码
+     */
+    public static final int WECHAT_CODE_NORMAL = 0;
+
+    /**
+     * 默认最大重试20次
+     */
+    public static final int MAX_RETRY_COUNT = 20;
+    /**
+     * 默认的初始化重试次数0
+     */
+    public static final int CURRENT_RETRY_INIT_COUNT = 0;
+
+    /**
+     * 默认获取昨天和今天的数据
+     */
+    public static final int BEFORE_DAY = 1;
+
 }
