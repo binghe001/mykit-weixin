@@ -85,11 +85,11 @@ public class WechatTemplateMsgFailedServiceImpl extends WechatCacheServiceImpl i
                 }catch (MyException e){
                     logger.info("处理数据失败，状态码为===>>>" + e.getCode() + ",  错误信息为===>>>" + e.getMessage());
                     //当前重试次数+1
-                    wechatTemplateMsgFailedMapper.updateCurrentRetryCount(DateUtils.parseDateToString(new Date(), DateUtils.DATE_TIME_FORMAT), msgFailed.getId());
+                    wechatTemplateMsgFailedMapper.updateCurrentRetryCount(msgFailed.getCurrentRetryCount() + 1, DateUtils.parseDateToString(new Date(), DateUtils.DATE_TIME_FORMAT), msgFailed.getId());
                     continue;
                 }catch (Exception e){
                     //当前重试次数+1
-                    wechatTemplateMsgFailedMapper.updateCurrentRetryCount(DateUtils.parseDateToString(new Date(), DateUtils.DATE_TIME_FORMAT), msgFailed.getId());
+                    wechatTemplateMsgFailedMapper.updateCurrentRetryCount(msgFailed.getCurrentRetryCount() + 1, DateUtils.parseDateToString(new Date(), DateUtils.DATE_TIME_FORMAT), msgFailed.getId());
                     e.printStackTrace();
                     continue;
                 }

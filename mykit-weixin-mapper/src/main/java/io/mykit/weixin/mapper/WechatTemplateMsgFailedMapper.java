@@ -47,5 +47,5 @@ public interface WechatTemplateMsgFailedMapper {
     /**
      * 更新当前重试次数
      */
-    int updateCurrentRetryCount(@Param("lastModifyTime") String lastModifyTime, @Param("id") String id);
+    int updateCurrentRetryCount(@Param("currentRetryCount") Integer currentRetryCount, @Param("lastModifyTime") String lastModifyTime, @Param("id") String id);
 }
