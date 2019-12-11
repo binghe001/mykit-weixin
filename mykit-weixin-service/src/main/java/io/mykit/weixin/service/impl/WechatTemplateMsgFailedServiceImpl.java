@@ -83,7 +83,7 @@ public class WechatTemplateMsgFailedServiceImpl extends WechatCacheServiceImpl i
                     //如果没抛出异常，则说明发送成功，删除当前失败记录
                     wechatTemplateMsgFailedMapper.deleteWechatTemplateMsgFailed(msgFailed.getId());
                 }catch (MyException e){
-                    logger.info("处理数据失败，状态码为===>>>" + e.getCode() + ",  错误信息为===>>>" + e.getMessage());
+                    logger.info("处理数据失败，状态码为===>>>" + e.getCode() + ",  错误信息为===>>>" + e.getMessage() + "当前失败记录的id===>>>" + msgFailed.getId());
                     //当前重试次数+1
                     wechatTemplateMsgFailedMapper.updateCurrentRetryCount(msgFailed.getCurrentRetryCount() + 1, DateUtils.parseDateToString(new Date(), DateUtils.DATE_TIME_FORMAT), msgFailed.getId());
                     continue;
