@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.mykit.weixin.mapper.WechatWebpageAuthorizationLogMapper">
+
+
+    <insert id="saveWechatWebpageAuthorizationLog">
+        insert into mp_wechat_webpage_authorization_log(
+          id,
+          t_create_time,
+          t_create_date,
+          t_status,
+          t_remark,
+          t_month_sharding,
+          t_last_modify_time,
+          foreign_system_id,
+          foreign_system,
+          slave_user,
+          open_id,
+          foreign_id,
+          foreign_type,
+          nick_name,
+          t_sex,
+          t_province,
+          t_city,
+          t_country,
+          head_imgurl,
+          t_privilege,
+          union_id
+        )
+        values (
+          #{id},
+          #{createTime},
+          #{createDate},
+          #{status},
+          #{remark},
+          #{monthSharding},
+          #{lastModifyTime},
+          #{foreignSystemId},
+          #{foreignSystem},
+          #{slaveUser},
+          #{openId},
+          #{foreignId},
+          #{foreignType},
+          #{nickname},
+          #{sex},
+          #{province},
+          #{city},
+          #{country},
+          #{headimgurl},
+          #{privilege},
+          #{unionid}
+        )
+    </insert>
+
+
+</mapper>

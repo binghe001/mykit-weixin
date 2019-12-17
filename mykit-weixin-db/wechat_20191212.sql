@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50724
 File Encoding         : 65001
 
-Date: 2019-12-11 17:44:44
+Date: 2019-12-17 11:56:52
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -65,7 +65,7 @@ CREATE TABLE `mp_wechat_account` (
 -- Records of mp_wechat_account
 -- ----------------------------
 INSERT INTO `mp_wechat_account` VALUES ('1111111111111111000000000', '2018-07-17 00:00:00', '2018-07-17', '201807', '8a8383af60747eb8016096fdb3dd0144', 'system_medcare', 'gh_0e80eba3e7e7', 'medcare', 'wx236aa846a79bdece', '8d0929acb787bdf54be08fde687c71d3', 'http://wx.cdmn.com/wechat/portal', 'k4pQRbQdF8N36sxdqy36iNDH8M5psv8T5Ax4rdP435q', '1', '关心堂健康中心', '2018-10-29 15:24:50', 'send_yes', 'send_yes');
-INSERT INTO `mp_wechat_account` VALUES ('1111111111111111000000001', '2018-07-17 00:00:00', '2018-07-17', '201807', '111111111111111111', 'system_medcare', 'gh_944c72276289', 'medcare', 'wxf3100cdfd4aee86c', '0a0c64dfafe1fde38400b3889162b86a', 'http://wx.cdmn.com/wechat/portal', 'k4pQRbQdF8N36sxdqy36iNDH8M5psv8T5Ax4rdP435q', '1', '关心堂健康中心', '2018-10-29 15:24:50', 'send_yes', 'send_yes');
+INSERT INTO `mp_wechat_account` VALUES ('1111111111111111000000001', '2018-07-17 00:00:00', '2018-07-17', '201807', '111111111111111111', 'system_medcare', 'gh_944c72276289', 'medcare', 'wxf3100cdfd4aee86c', '0a0c64dfafe1fde38400b3889162b86a', 'http://wx.cdmn.com/wechat/portal', 'k4pQRbQdF8N36sxdqy36iNDH8M5psv8T5Ax4rdP435q', '1', '测试账号', '2018-10-29 15:24:50', 'send_yes', 'send_yes');
 
 -- ----------------------------
 -- Table structure for mp_wechat_account_template_join
@@ -148,7 +148,7 @@ CREATE TABLE `mp_wechat_kfaccount_text_msg_log` (
   `t_result` varchar(255) DEFAULT '' COMMENT '发送微信客服消息微信服务器返回的结果',
   `t_retry` varchar(30) NOT NULL DEFAULT 'retry_false' COMMENT '是否是重试的结果retry_false:否 retry_true:是',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='微信客服消息发送记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='其他机构的微信信息';
 
 -- ----------------------------
 -- Records of mp_wechat_kfaccount_text_msg_log
@@ -295,4 +295,37 @@ CREATE TABLE `mp_wechat_user_subscribe` (
 
 -- ----------------------------
 -- Records of mp_wechat_user_subscribe
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for mp_wechat_webpage_authorization_log
+-- ----------------------------
+DROP TABLE IF EXISTS `mp_wechat_webpage_authorization_log`;
+CREATE TABLE `mp_wechat_webpage_authorization_log` (
+  `id` varchar(32) NOT NULL COMMENT '默认的id',
+  `t_create_time` varchar(30) DEFAULT '' COMMENT '创建的时间yyyy-MM-dd HH:mm:ss',
+  `t_create_date` varchar(20) DEFAULT '' COMMENT '创建日期yyyy-MM-dd',
+  `t_month_sharding` varchar(20) DEFAULT '' COMMENT '分片字段yyyyMM',
+  `t_status` int(2) DEFAULT '1' COMMENT '状态 1：正常 0：删除',
+  `t_remark` varchar(255) DEFAULT '' COMMENT '备注',
+  `t_last_modify_time` varchar(30) DEFAULT '' COMMENT '最后修改时间 yyyy-MM-dd HH:mm:ss',
+  `foreign_system_id` varchar(50) DEFAULT '' COMMENT '外部的id,其他业务或系统的关联性ID',
+  `foreign_system` varchar(50) DEFAULT '' COMMENT '其他系统的唯一标识',
+  `slave_user` varchar(50) DEFAULT '' COMMENT '微信开发者账号',
+  `open_id` varchar(50) DEFAULT '' COMMENT '微信用户id',
+  `foreign_id` varchar(50) DEFAULT '' COMMENT '用户在其他系统上的id',
+  `foreign_type` varchar(50) DEFAULT '' COMMENT '用户在其他系统中的类型',
+  `nick_name` varchar(50) DEFAULT '' COMMENT '昵称',
+  `t_sex` int(2) DEFAULT '0' COMMENT '用户的性别，值为1时是男性，值为2时是女性，值为0时是未知',
+  `t_province` varchar(20) DEFAULT '' COMMENT '省',
+  `t_city` varchar(20) DEFAULT '' COMMENT '市',
+  `t_country` varchar(50) DEFAULT '' COMMENT '国家',
+  `head_imgurl` varchar(255) DEFAULT '' COMMENT '头像',
+  `t_privilege` varchar(255) DEFAULT '' COMMENT '用户特权信息',
+  `union_id` varchar(50) DEFAULT '' COMMENT '只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='微信网页授权认证记录';
+
+-- ----------------------------
+-- Records of mp_wechat_webpage_authorization_log
 -- ----------------------------

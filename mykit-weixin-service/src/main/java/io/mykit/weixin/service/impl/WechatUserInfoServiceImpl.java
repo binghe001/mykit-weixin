@@ -26,7 +26,9 @@ import io.mykit.wechat.utils.json.JsonUtils;
 import io.mykit.weixin.constants.wechat.WechatConstants;
 import io.mykit.weixin.entity.WechatAccount;
 import io.mykit.weixin.entity.WechatUserInfo;
+import io.mykit.weixin.entity.WechatWebpageAuthorizationLog;
 import io.mykit.weixin.mapper.WechatUserInfoMapper;
+import io.mykit.weixin.mapper.WechatWebpageAuthorizationLogMapper;
 import io.mykit.weixin.service.WechatAccountService;
 import io.mykit.weixin.service.WechatUserInfoService;
 import io.mykit.weixin.service.impl.base.WechatCacheServiceImpl;
@@ -50,15 +52,17 @@ public class WechatUserInfoServiceImpl extends WechatCacheServiceImpl implements
     private WechatUserInfoMapper wechatUserInfoMapper;
     @Resource
     private WechatAccountService wechatAccountService;
+    @Resource
+    private WechatWebpageAuthorizationLogMapper wechatWebpageAuthorizationLogMapper;
 
     @Override
     @Transactional
     public int saveWechatUserInfo(String code, String foreignSystemId, String foreignSystem, String foreignId, String foreignType) throws Exception {
         int count = 0;
         //查询当前用户是否绑定过openId
-        String openId = this.getOpenId(foreignSystemId, foreignSystem, foreignId, foreignType);
+        //String openId = this.getOpenId(foreignSystemId, foreignSystem, foreignId, foreignType);
         //微信openId为空，执行保存操作
-        if(StringUtils.isEmpty(openId)){
+        //if(StringUtils.isEmpty(openId)){
             WechatAccount wechatAccount = wechatAccountService.getWechatAccountByForeignIdAndSystem(foreignSystemId, foreignSystem);
             if(wechatAccount != null){
                 //从微信获取信息
@@ -96,10 +100,27 @@ public class WechatUserInfoServiceImpl extends WechatCacheServiceImpl implements
                             //被其他人绑定过，更新绑定信息
                             count = wechatUserInfoMapper.updateForeignId(foreignId, id);
                         }
+                        //记录微信网页授权认证记录
+                        WechatWebpageAuthorizationLog wechatWebpageAuthorizationLog = new WechatWebpageAuthorizationLog();
+                        wechatWebpageAuthorizationLog.setForeignSystemId(foreignSystemId);
+                        wechatWebpageAuthorizationLog.setForeignSystem(foreignSystem);
+                        wechatWebpageAuthorizationLog.setSlaveUser(wechatAccount.getSlaveUser());
+                        wechatWebpageAuthorizationLog.setOpenId(wxOAuth2AccessToken.getOpenid());
+                        wechatWebpageAuthorizationLog.setForeignId(foreignId);
+                        wechatWebpageAuthorizationLog.setForeignType(foreignType);
+                        wechatWebpageAuthorizationLog.setNickname("");
+                        wechatWebpageAuthorizationLog.setSex(0);
+                        wechatWebpageAuthorizationLog.setProvince("");
+                        wechatWebpageAuthorizationLog.setCity("");
+                        wechatWebpageAuthorizationLog.setCountry("");
+                        wechatWebpageAuthorizationLog.setHeadimgurl("");
+                        wechatWebpageAuthorizationLog.setPrivilege("");
+                        wechatWebpageAuthorizationLog.setUnionid("");
+                        wechatWebpageAuthorizationLogMapper.saveWechatWebpageAuthorizationLog(wechatWebpageAuthorizationLog);
                     }
                 }
             }
-        }
+       // }
         return count;
     }
 
