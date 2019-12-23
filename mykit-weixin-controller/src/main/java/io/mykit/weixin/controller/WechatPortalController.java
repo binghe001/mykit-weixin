@@ -15,14 +15,10 @@
  */
 package io.mykit.weixin.controller;
 
-import io.mykit.wechat.mp.beans.router.receive.WxReceiveRouterResult;
-import io.mykit.wechat.mp.beans.xml.receive.event.WxSubscribeEventMessage;
-import io.mykit.wechat.mp.beans.xml.receive.event.WxUnSubscribeEventMessage;
 import io.mykit.wechat.mp.core.router.WxReceiveMessageRouter;
-import io.mykit.wechat.utils.constants.WxConstants;
 import io.mykit.wechat.utils.sign.WechatSignUtils;
 import io.mykit.weixin.constants.wechat.WechatConstants;
-import io.mykit.weixin.service.WechatUserSubscribeService;
+import io.mykit.weixin.service.WechatRouterService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +39,7 @@ public class WechatPortalController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Resource
-    private WechatUserSubscribeService wechatUserSubscribeService;
+    private WechatRouterService wechatRouterService;
 
     /**
      * 验证签名，确认消息时从微信服务器接收到的
@@ -95,48 +91,7 @@ public class WechatPortalController {
             throw new IllegalArgumentException("非法请求，可能属于伪造的请求！");
         }
         //处理业务逻辑
-        return this.routeResult(WxReceiveMessageRouter.router(requestBody));
+        return wechatRouterService.routeResult(requestBody);
 
-    }
-
-    /**
-     * 路由消息
-     * @param wxReceiveRouterResult 封装的微信结果信息
-     * @return 结果信息
-     */
-    private String routeResult(WxReceiveRouterResult wxReceiveRouterResult) {
-        switch (wxReceiveRouterResult.getRouterType()){
-            //关注事件
-            case WxConstants.ROUTER_EVENT_SUBSCRIBE:
-                return routerEventSubscribe(wxReceiveRouterResult);
-            //取消关注事件
-            case WxConstants.ROUTER_EVENT_UNSUBSCRIBE:
-                return routerEventUnSubscribe(wxReceiveRouterResult);
-            default:
-        }
-        return "";
-    }
-
-
-    /**
-     * 路由关注事件
-     * @param wxReceiveRouterResult 收到的微信消息
-     * @return 返回结果
-     */
-    private String routerEventSubscribe(WxReceiveRouterResult wxReceiveRouterResult) {
-        WxSubscribeEventMessage wxSubscribeEventMessage = (WxSubscribeEventMessage) wxReceiveRouterResult.getBaseReceiveMessage();
-        wechatUserSubscribeService.saveOrUpdateWxSubscribeEventMessage(wxSubscribeEventMessage);
-        return "";
-    }
-
-    /**
-     * 路由取消关注事件
-     * @param wxReceiveRouterResult 收到的微信消息
-     * @return 返回结果
-     */
-    private String routerEventUnSubscribe(WxReceiveRouterResult wxReceiveRouterResult) {
-        WxUnSubscribeEventMessage wxUnSubscribeEventMessage = (WxUnSubscribeEventMessage) wxReceiveRouterResult.getBaseReceiveMessage();
-        wechatUserSubscribeService.updateWxUnSubscribeEventMessage(wxUnSubscribeEventMessage);
-        return "";
     }
 }
