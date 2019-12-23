@@ -49,7 +49,7 @@ public class WechatConstants {
         sb.append("?teamId="+wechatQrcodeSubscribeInfo.getTeamId()+"&docId=" + wechatQrcodeSubscribeInfo.getDocId() + "&openId=" + openId);
         sb.append("&hospId=" + wechatQrcodeSubscribeInfo.getHospId());
         sb.append("\">");
-        sb.append("点击立即签约" + wechatQrcodeSubscribeInfo.getDocName());
+        sb.append("→点击立即签约" + wechatQrcodeSubscribeInfo.getDocName());
         sb.append("</a>");
         return sb.toString();
     }
