@@ -12,6 +12,9 @@ QQ：2711098650
 ## mykit-weixin-utils
 系统通用工具模块
 
+## mykit-weixin-config
+系统配置模块
+
 ## mykit-wexin-entity
 系统的实体模块，封装了系统的实体类、常量和参数
 
@@ -34,7 +37,11 @@ QQ：2711098650
 系统的入口模块，以SpringBoot启动整个项目服务，同时，对系统进行各种配置
 注意：在resources目录下，新建redis.properties，重新配置了Redis信息，覆盖了mykit-wechat-sdk下的redis配置redis.properties
 
+## mykit-weixin-scheduler
+定时业务调度模块
 
+## mykit-weixin-test
+单元测试模块
 
 
 

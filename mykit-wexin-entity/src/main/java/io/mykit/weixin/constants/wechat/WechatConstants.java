@@ -15,6 +15,8 @@
  */
 package io.mykit.weixin.constants.wechat;
 
+import io.mykit.weixin.vo.WechatQrcodeSubscribeInfo;
+
 /**
  * @author liuyazhuang
  * @date 2018/10/29 18:23
@@ -22,6 +24,59 @@ package io.mykit.weixin.constants.wechat;
  * @version 1.0.0
  */
 public class WechatConstants {
+
+    /**
+     * 关注后默认返回的消息
+     */
+    public static String getSubscribeResponseMessage(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Hi，自今后，让我为您的健康护航！\n");
+        sb.append("点此<a href=\"http://wx.cdmn.com/medcare/dest/client/fdSignWX/index.html?hospitalId=8a8383af60747eb8016096fdb3dd0144\">立即签约</a>享免费咨询\n");
+        sb.append("会员中心领<a href=\"https://mp.weixin.qq.com/s?__biz=MzI3Nzc5ODU0MQ==&mid=2247486015&idx=1&sn=cce86eeb08bd8f1cca1c51b973959519&chksm=eb6181dddc1608cb6c59bf0544a940d74011540fc2dace7a11cf2df1c345407928de7faa3720&token=1548696&lang=zh_CN#rd\">健康工具</a>，<a href=\"http://wx.cdmn.com/fdConsultWX/minHtml/index.html?hospitalId=8a8383a458dd38d40158ddd759a10004\">咨询专家</a>\n");
+        sb.append("如有疑问请咨询健康管家。\n");
+        sb.append("管家微信号：cmd13088075887\n");
+        return sb.toString();
+    }
+
+    /**
+     * 扫码关注正常情况返回的信息
+     */
+    public static String getQrcodeSubscribeResponseMessage(WechatQrcodeSubscribeInfo wechatQrcodeSubscribeInfo, String url, String openId){
+        StringBuilder sb = new StringBuilder();
+        sb.append(QRCODE_SUBSCRIBE_RESPONSE_MESSAGE);
+        sb.append("<a href=\"");
+        sb.append(url);
+        sb.append("?teamId="+wechatQrcodeSubscribeInfo.getTeamId()+"&docId=" + wechatQrcodeSubscribeInfo.getDocId() + "&openId=" + openId);
+        sb.append("&hospId=" + wechatQrcodeSubscribeInfo.getHospId());
+        sb.append("\">");
+        sb.append("点击立即签约" + wechatQrcodeSubscribeInfo.getDocName());
+        sb.append("</a>");
+        return sb.toString();
+    }
+
+    /**
+     * 扫描关注微信公众号返回消息
+     */
+    public static String QRCODE_SUBSCRIBE_RESPONSE_MESSAGE = "第一步：扫二维码（✓已完成）\n" + "第二步：签约\n\n";
+
+    /**
+     * 业务系统返回的消息key
+     */
+    public static final String MESSAGE = "message";
+    /**
+     * 业务系统返回的状态码key
+     */
+    public static final String CODE = "code";
+
+    /**
+     * 成功状态码
+     */
+    public static final Integer CODE_SUCCESS = 1001;
+
+    /**
+     * 扫码关注的前缀
+     */
+    public static final String QRSCENE_PREFIX = "qrscene_";
 
     /**
      * null字符串
