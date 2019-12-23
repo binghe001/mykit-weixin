@@ -26,6 +26,19 @@ import io.mykit.weixin.vo.WechatQrcodeSubscribeInfo;
 public class WechatConstants {
 
     /**
+     * 联系我们
+     */
+    public static String getCallUs(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("如有任何疑问可联系关心堂健康管家！\n");
+        sb.append("周一至周五请拨打028-66333314；\n");
+        sb.append("周六至周日请拨打13088021189；\n");
+        sb.append("或加管家微信：13088075887\n");
+        sb.append("（服务时间：9：00-18：00）\n");
+        return sb.toString();
+    }
+
+    /**
      * 关注后默认返回的消息
      */
     public static String getSubscribeResponseMessage(){
@@ -46,14 +59,27 @@ public class WechatConstants {
         sb.append(QRCODE_SUBSCRIBE_RESPONSE_MESSAGE);
         sb.append("<a href=\"");
         sb.append(url);
-        sb.append("?teamId="+wechatQrcodeSubscribeInfo.getTeamId()+"&docId=" + wechatQrcodeSubscribeInfo.getDocId() + "&openId=" + openId);
-        sb.append("&hospId=" + wechatQrcodeSubscribeInfo.getHospId());
+        sb.append("?teamId=" + wechatQrcodeSubscribeInfo.getTeamId());
+        sb.append("&isSign=noSign");
+        sb.append("&askBodyType=type_team");
+        sb.append("&askBodyId=" + wechatQrcodeSubscribeInfo.getTeamId());
+        sb.append("&askNum=0");
+        sb.append("&askBodyName=" + wechatQrcodeSubscribeInfo.getTeamName());
+        sb.append("&askType=type_charge");
+        sb.append("&hospitalId=" + wechatQrcodeSubscribeInfo.getHospId());
+        sb.append("&docId=" + wechatQrcodeSubscribeInfo.getDocId());
+        sb.append("&docName=" + wechatQrcodeSubscribeInfo.getDocName());
+        sb.append("&openId=" + openId);
         sb.append("\">");
         sb.append("→点击立即签约" + wechatQrcodeSubscribeInfo.getDocName());
         sb.append("</a>");
         return sb.toString();
     }
 
+    /**
+     * 点击微信菜单联系我们
+     */
+    public static final String WECHAT_MENU_CLICK_CALL_US = "menu_click_call_us";
     /**
      * 扫描关注微信公众号返回消息
      */

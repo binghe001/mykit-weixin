@@ -20,6 +20,7 @@ import io.mykit.wechat.mp.beans.xml.receive.event.WxQrcodeScanEventMessage;
 import io.mykit.wechat.mp.beans.xml.receive.event.WxQrcodeSubscribeEventMessage;
 import io.mykit.wechat.mp.beans.xml.receive.event.WxSubscribeEventMessage;
 import io.mykit.wechat.mp.beans.xml.receive.event.WxUnSubscribeEventMessage;
+import io.mykit.wechat.mp.beans.xml.receive.event.menu.WxMenuClientEventMessage;
 import io.mykit.wechat.mp.core.router.WxReceiveMessageRouter;
 import io.mykit.wechat.utils.common.StringUtils;
 import io.mykit.wechat.utils.constants.WxConstants;
@@ -76,9 +77,22 @@ public class WechatRouterServiceImpl extends WechatCacheServiceImpl implements W
             //已经关注再次扫码
             case WxConstants.ROUTER_EVENT_SCAN:
                 return routerEventScan(wxReceiveRouterResult);
+            case WxConstants.ROUTER_EVENT_CLICK:
+                return routerMenuClientEventScan(wxReceiveRouterResult);
             default:
         }
         return "";
+    }
+
+    /**
+     * 点击菜单事件
+     * @param wxReceiveRouterResult 收到的微信消息
+     * @return 返回结果
+     */
+    private String routerMenuClientEventScan(WxReceiveRouterResult wxReceiveRouterResult){
+        WxMenuClientEventMessage wxMenuClientEventMessage = (WxMenuClientEventMessage)wxReceiveRouterResult.getBaseReceiveMessage();
+        String response = WechatConstants.getCallUs();
+        return wechatUserSubscribeService.getTextResponseResult(wxMenuClientEventMessage.getFromUserName(), wxMenuClientEventMessage.getToUserName(), response);
     }
 
 

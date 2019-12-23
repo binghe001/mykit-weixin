@@ -1,7 +1,9 @@
 package io.mykit.weixin.vo;
 
-import java.io.Serializable;
+import lombok.Data;
 
+import java.io.Serializable;
+@Data
 public class WechatQrcodeSubscribeInfo implements Serializable {
 	private static final long serialVersionUID = -6776742644772835934L;
 	private String id = "";
@@ -47,6 +49,11 @@ public class WechatQrcodeSubscribeInfo implements Serializable {
 	 * 指定关注后获取的团队id
 	 */
 	private String teamId = "";
+
+	/**
+	 * 团队名称
+	 */
+	private String teamName = "";
 	
 	/**
 	 * 状态
@@ -56,83 +63,4 @@ public class WechatQrcodeSubscribeInfo implements Serializable {
 	private Integer status = 1;
 
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getDocId() {
-		return docId;
-	}
-
-	public void setDocId(String docId) {
-		this.docId = docId;
-	}
-
-	public String getDocAccount() {
-		return docAccount;
-	}
-
-	public void setDocAccount(String docAccount) {
-		this.docAccount = docAccount;
-	}
-
-	public String getDocName() {
-		return docName;
-	}
-
-	public void setDocName(String docName) {
-		this.docName = docName;
-	}
-
-	public String getHospId() {
-		return hospId;
-	}
-
-	public void setHospId(String hospId) {
-		this.hospId = hospId;
-	}
-
-	public String getHospName() {
-		return hospName;
-	}
-
-	public void setHospName(String hospName) {
-		this.hospName = hospName;
-	}
-
-	public String getSecId() {
-		return secId;
-	}
-
-	public void setSecId(String secId) {
-		this.secId = secId;
-	}
-
-	public String getSecName() {
-		return secName;
-	}
-
-	public void setSecName(String secName) {
-		this.secName = secName;
-	}
-
-	public String getTeamId() {
-		return teamId;
-	}
-
-	public void setTeamId(String teamId) {
-		this.teamId = teamId;
-	}
-
-	public Integer getStatus() {
-		return status;
-	}
-
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
 }
