@@ -26,7 +26,9 @@ import io.mykit.weixin.constants.code.MobileHttpCode;
 import io.mykit.weixin.constants.wechat.WechatConstants;
 import io.mykit.weixin.entity.WechatAccount;
 import io.mykit.weixin.entity.WechatKfaccountTextMsgLog;
+import io.mykit.weixin.entity.WechatUserInfo;
 import io.mykit.weixin.mapper.WechatKfaccountTextMsgLogMapper;
+import io.mykit.weixin.mapper.WechatUserInfoMapper;
 import io.mykit.weixin.params.WechatKfaccountTextMsgParams;
 import io.mykit.weixin.service.WechatAccountService;
 import io.mykit.weixin.service.WechatKfaccountTextMsgLogService;
@@ -52,6 +54,8 @@ public class WechatKfaccountTextMsgLogServiceImpl extends WechatCacheServiceImpl
     @Resource
     private WechatAccountService wechatAccountService;
     @Resource
+    private WechatUserInfoMapper wechatUserInfoMapper;
+    @Resource
     private WechatUserInfoService wechatUserInfoService;
     @Resource
     private WechatKfaccountTextMsgLogMapper wechatKfaccountTextMsgLogMapper;
@@ -68,7 +72,35 @@ public class WechatKfaccountTextMsgLogServiceImpl extends WechatCacheServiceImpl
         if(StringUtils.isEmpty(wechatAccount.getSendCustom()) || WechatConstants.SEND_NO.equals(wechatAccount.getSendCustom())){
             throw new MyException("没有权限发送", MobileHttpCode.HTTP_NO_LIMIT_TO_SEND_TEMPLATE);
         }
-        String openId = wechatUserInfoService.getOpenId(wechatKfaccountTextMsgParams.getForeignSystemId(), wechatKfaccountTextMsgParams.getForeignSystem(), wechatKfaccountTextMsgParams.getForeignId(), wechatKfaccountTextMsgParams.getForeignType());
+        String openId = "";
+        if(StringUtils.isEmpty(wechatKfaccountTextMsgParams.getOpenId())){
+            openId = wechatUserInfoService.getOpenId(wechatKfaccountTextMsgParams.getForeignSystemId(), wechatKfaccountTextMsgParams.getForeignSystem(), wechatKfaccountTextMsgParams.getForeignId(), wechatKfaccountTextMsgParams.getForeignType());
+        }else{
+            openId = wechatKfaccountTextMsgParams.getOpenId();
+            //String foreignSystemId, @Param("foreignSystem") String foreignSystem, @Param("openId") String openId, @Param("foreignType") String foreignType
+            String id = wechatUserInfoMapper.getId(wechatKfaccountTextMsgParams.getForeignSystemId(), wechatKfaccountTextMsgParams.getForeignSystem(), wechatKfaccountTextMsgParams.getOpenId(), wechatKfaccountTextMsgParams.getForeignType());
+           //数据为空,保存数据
+            if(StringUtils.isEmpty(id)){
+                WechatUserInfo wechatUserInfo = new WechatUserInfo();
+                wechatUserInfo.setForeignSystemId(wechatKfaccountTextMsgParams.getForeignSystemId());
+                wechatUserInfo.setForeignSystem(wechatKfaccountTextMsgParams.getForeignSystem());
+                wechatUserInfo.setSlaveUser(wechatAccount.getSlaveUser());
+                wechatUserInfo.setOpenId(openId);
+                wechatUserInfo.setForeignId(wechatKfaccountTextMsgParams.getForeignId());
+                wechatUserInfo.setForeignType(wechatKfaccountTextMsgParams.getForeignType());
+                wechatUserInfo.setNickname("");
+                wechatUserInfo.setSex(0);
+                wechatUserInfo.setProvince("");
+                wechatUserInfo.setCity("");
+                wechatUserInfo.setCountry("");
+                wechatUserInfo.setHeadimgurl("");
+                wechatUserInfo.setPrivilege("");
+                wechatUserInfo.setUnionid("");
+                wechatUserInfoMapper.saveWechatUserInfo(wechatUserInfo);
+            }else{
+                wechatUserInfoMapper.updateForeignId(wechatKfaccountTextMsgParams.getForeignId(), id) ;
+            }
+        }
         if(StringUtils.isEmpty(openId)){
             logger.info("未获取到微信openid....");
             throw new MyException("未获取到微信openid", MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID);

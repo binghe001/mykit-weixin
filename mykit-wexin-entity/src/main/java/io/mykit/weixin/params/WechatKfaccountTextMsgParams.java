@@ -29,7 +29,12 @@ public class WechatKfaccountTextMsgParams extends WechatKfaccountMsgParams {
     /**
      * 发送的消息内容
      */
-    private String content;
+    private String content = "";
+
+    /**
+     * 用户的openId
+     */
+    private String openId = "";
 
     /**
      * 是否重试，默认为否

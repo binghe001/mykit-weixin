@@ -46,4 +46,9 @@ public class WechatTemplateParams extends WechatBaseParams {
     private String url = "";
     //默认不重试
     private String retry = "retry_false";
+
+    /**
+     * 用户的openId
+     */
+    private String openId = "";
 }

@@ -145,19 +145,24 @@ public class WechatOAuth2Controller {
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public void user(String parameter, HttpServletRequest request, HttpServletResponse response){
         logger.debug(parameter);
-        if(StringUtils.isEmpty(parameter)){
-            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_PARAMETER_INVALID, response);
-            return;
+        try{
+            if(StringUtils.isEmpty(parameter)){
+                ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_PARAMETER_INVALID, response);
+                return;
+            }
+            WechatOAuth2Params params = JsonUtils.json2Bean(parameter, WechatOAuth2Params.class);
+            String code = params.getCode();
+            String state = params.getState();
+            String[] states = state.split(WechatConstants.WECHAT_OAUTH2_STATE_SPLIT);
+            //String code, String foreignSystemId, String foreignSystem, String foreignId, String foreignType, WechatUserInfoService wechatUserInfoService
+            WechatUserInfoTask wechatUserInfoTask = new WechatUserInfoTask(code, states[0], states[1], params.getForeignId(), params.getForeignType(), wechatUserInfoService);
+            //提交到线程处理
+            ExecutorUtils.executeThread(wechatUserInfoTask);
+            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_NORMAL, response);
+        }catch (Exception e){
+            e.printStackTrace();
+            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_SERVER_EXCEPTION, response);
         }
-        WechatOAuth2Params params = JsonUtils.json2Bean(parameter, WechatOAuth2Params.class);
-        String code = params.getCode();
-        String state = params.getState();
-        String[] states = state.split(WechatConstants.WECHAT_OAUTH2_STATE_SPLIT);
-        //String code, String foreignSystemId, String foreignSystem, String foreignId, String foreignType, WechatUserInfoService wechatUserInfoService
-        WechatUserInfoTask wechatUserInfoTask = new WechatUserInfoTask(code, states[0], states[1], params.getForeignId(), params.getForeignType(), wechatUserInfoService);
-        //提交到线程处理
-        ExecutorUtils.executeThread(wechatUserInfoTask);
-        ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_NORMAL, response);
     }
 
     /**

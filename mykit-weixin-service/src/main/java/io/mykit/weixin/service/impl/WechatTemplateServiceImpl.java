@@ -27,8 +27,10 @@ import io.mykit.weixin.constants.wechat.WechatConstants;
 import io.mykit.weixin.entity.WechatAccount;
 import io.mykit.weixin.entity.WechatTemplate;
 import io.mykit.weixin.entity.WechatTemplateMsgLog;
+import io.mykit.weixin.entity.WechatUserInfo;
 import io.mykit.weixin.mapper.WechatTemplateMapper;
 import io.mykit.weixin.mapper.WechatTemplateMsgLogMapper;
+import io.mykit.weixin.mapper.WechatUserInfoMapper;
 import io.mykit.weixin.params.WechatTemplateParams;
 import io.mykit.weixin.service.WechatAccountService;
 import io.mykit.weixin.service.WechatTemplateService;
@@ -59,6 +61,8 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
     private WechatAccountService wechatAccountService;
     @Resource
     private WechatUserInfoService wechatUserInfoService;
+    @Resource
+    private WechatUserInfoMapper wechatUserInfoMapper;
 
     @Override
     public WechatTemplate getWechatTemplateByType(String type, String accountId) {
@@ -93,7 +97,35 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
             logger.info("未获取到微信消息模板....");
             throw new MyException("未获取到微信消息模板", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE);
         }
-        String openId = wechatUserInfoService.getOpenId(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem(), wechatTemplateParams.getForeignId(), wechatTemplateParams.getForeignType());
+        String openId = "";
+        if(StringUtils.isEmpty(wechatTemplateParams.getOpenId())){
+            openId = wechatUserInfoService.getOpenId(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem(), wechatTemplateParams.getForeignId(), wechatTemplateParams.getForeignType());
+        }else{
+            openId = wechatTemplateParams.getOpenId();
+            //String foreignSystemId, @Param("foreignSystem") String foreignSystem, @Param("openId") String openId, @Param("foreignType") String foreignType
+            String id = wechatUserInfoMapper.getId(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem(), wechatTemplateParams.getOpenId(), wechatTemplateParams.getForeignType());
+            //数据为空,保存数据
+            if(StringUtils.isEmpty(id)){
+                WechatUserInfo wechatUserInfo = new WechatUserInfo();
+                wechatUserInfo.setForeignSystemId(wechatTemplateParams.getForeignSystemId());
+                wechatUserInfo.setForeignSystem(wechatTemplateParams.getForeignSystem());
+                wechatUserInfo.setSlaveUser(wechatAccount.getSlaveUser());
+                wechatUserInfo.setOpenId(openId);
+                wechatUserInfo.setForeignId(wechatTemplateParams.getForeignId());
+                wechatUserInfo.setForeignType(wechatTemplateParams.getForeignType());
+                wechatUserInfo.setNickname("");
+                wechatUserInfo.setSex(0);
+                wechatUserInfo.setProvince("");
+                wechatUserInfo.setCity("");
+                wechatUserInfo.setCountry("");
+                wechatUserInfo.setHeadimgurl("");
+                wechatUserInfo.setPrivilege("");
+                wechatUserInfo.setUnionid("");
+                wechatUserInfoMapper.saveWechatUserInfo(wechatUserInfo);
+            }else{
+                wechatUserInfoMapper.updateForeignId(wechatTemplateParams.getForeignId(), id) ;
+            }
+        }
         if(StringUtils.isEmpty(openId)){
             logger.info("未获取到微信openid....");
             throw new MyException("未获取到微信openid", MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID);
