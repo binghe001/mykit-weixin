@@ -56,7 +56,7 @@ public class WechatOAuth2Controller {
     @Resource
     private WechatUserInfoService wechatUserInfoService;
     /**
-     * 用户微信授权登录, 不能用ajax调用
+     * 用户微信授权登录, 不能用ajax调用，通过form表单提交
      * @param parameter
      * @param request
      * @param response
