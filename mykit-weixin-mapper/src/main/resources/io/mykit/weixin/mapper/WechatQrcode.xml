@@ -54,7 +54,7 @@
     </insert>
 
     <!--微信用户完整的映射关系-->
-    <resultMap id="wechatQrcodeAllMap" type="WechatUserInfo">
+    <resultMap id="wechatQrcodeAllMap" type="WechatQrcode">
         <id property="id" column="id"/>
         <result property="createTime" column="t_create_time"/>
         <result property="createDate" column="t_create_date"/>
