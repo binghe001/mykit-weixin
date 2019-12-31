@@ -15,6 +15,7 @@
  */
 package io.mykit.weixin.params;
 
+import io.mykit.weixin.entity.WechatQrcode;
 import lombok.Data;
 
 /**
@@ -30,11 +31,11 @@ public class WechatQrcodeParams extends WechatBaseParams {
      * type_noexpire：永久二维码
      * type_expire: 临时二维码
      */
-    private String qrcodeType =  "";
+    private String qrcodeType = WechatQrcode.TYPE_NOEXPIRE;
 
     /**
      * 临时二维码有效时长, 以秒为单位
      */
-    private Integer expireSeconds = 0;
+    private Integer expireSeconds = 30 * 24 * 60 * 60;
 
 }
