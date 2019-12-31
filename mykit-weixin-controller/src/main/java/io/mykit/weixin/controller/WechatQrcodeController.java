@@ -23,6 +23,8 @@ import io.mykit.weixin.params.WechatQrcodeParams;
 import io.mykit.weixin.service.WechatQrcodeServcie;
 import io.mykit.weixin.utils.exception.MyException;
 import io.mykit.weixin.utils.resp.helper.ResponseHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping(value = "/wechat/qrcode")
 public class WechatQrcodeController {
+    private final Logger logger = LoggerFactory.getLogger(WechatQrcodeController.class);
     @Resource
     private WechatQrcodeServcie wechatQrcodeServcie;
     /**
@@ -79,9 +82,13 @@ public class WechatQrcodeController {
             ResponseHelper.responseMessage(wechatQrcode, false, true, MobileHttpCode.HTTP_NORMAL, response);
         }catch (MyException e){
             e.printStackTrace();
+            logger.info("抛异常===>>>" + e.getMessage());
+            logger.info("抛异常===>>>" + e.getStackTrace());
             ResponseHelper.responseMessage(null, false, true, e.getCode(), response);
         }catch (Exception e){
             e.printStackTrace();
+            logger.info("抛异常===>>>" + e.getMessage());
+            logger.info("抛异常===>>>" + e.getStackTrace());
             ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_SERVER_EXCEPTION, response);
         }
     }
