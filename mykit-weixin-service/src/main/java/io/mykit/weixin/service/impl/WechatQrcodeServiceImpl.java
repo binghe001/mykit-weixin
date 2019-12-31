@@ -183,13 +183,29 @@ public class WechatQrcodeServiceImpl extends WechatCacheServiceImpl implements W
         return wechatQrcode;
     }
 
-    private WechatQrcode getNativeWechatQrcode(WechatQrcodeParams wechatQrcodeParams){
-          return wechatQrcodeMapper.getWechatQrcode(wechatQrcodeParams.getForeignSystemId(),
-                wechatQrcodeParams.getForeignSystem(),
-                wechatQrcodeParams.getForeignId(),
-                wechatQrcodeParams.getForeignType(),
-                wechatQrcodeParams.getQrcodeType(),
-                System.currentTimeMillis());
+    private WechatQrcode getNativeWechatQrcode(WechatQrcodeParams wechatQrcodeParams) {
+
+        switch (wechatQrcodeParams.getQrcodeType()) {
+            case WechatQrcode.TYPE_EXPIRE:
+                return wechatQrcodeMapper.getExpireWechatQrcode(wechatQrcodeParams.getForeignSystemId(),
+                        wechatQrcodeParams.getForeignSystem(),
+                        wechatQrcodeParams.getForeignId(),
+                        wechatQrcodeParams.getForeignType(),
+                        wechatQrcodeParams.getQrcodeType(),
+                        System.currentTimeMillis());
+            case WechatQrcode.TYPE_NOEXPIRE:
+                return wechatQrcodeMapper.getNoExpireWechatQrcode(wechatQrcodeParams.getForeignSystemId(),
+                        wechatQrcodeParams.getForeignSystem(),
+                        wechatQrcodeParams.getForeignId(),
+                        wechatQrcodeParams.getForeignType(),
+                        wechatQrcodeParams.getQrcodeType());
+            default:
+                return wechatQrcodeMapper.getNoExpireWechatQrcode(wechatQrcodeParams.getForeignSystemId(),
+                        wechatQrcodeParams.getForeignSystem(),
+                        wechatQrcodeParams.getForeignId(),
+                        wechatQrcodeParams.getForeignType(),
+                        wechatQrcodeParams.getQrcodeType());
+        }
     }
 
 }

@@ -36,10 +36,18 @@ public interface WechatQrcodeMapper {
     /**
      * 获取二维码信息
      */
-    WechatQrcode getWechatQrcode(@Param("foreignSystemId") String foreignSystemId,
+    WechatQrcode getExpireWechatQrcode(@Param("foreignSystemId") String foreignSystemId,
                                  @Param("foreignSystem") String foreignSystem,
                                  @Param("foreignId") String foreignId,
                                  @Param("foreignType") String foreignType,
                                  @Param("qrcodeType") String qrcodeType,
                                  @Param("currentTime") Long currentTime);
+    /**
+     * 获取二维码信息
+     */
+    WechatQrcode getNoExpireWechatQrcode(@Param("foreignSystemId") String foreignSystemId,
+                                 @Param("foreignSystem") String foreignSystem,
+                                 @Param("foreignId") String foreignId,
+                                 @Param("foreignType") String foreignType,
+                                 @Param("qrcodeType") String qrcodeType);
 }
