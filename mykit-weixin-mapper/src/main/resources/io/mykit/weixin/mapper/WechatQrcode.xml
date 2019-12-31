@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="io.mykit.weixin.mapper.WechatQrcodeMapper">
+
+
+    <insert id="saveWechatQrcode">
+        insert into mp_wechat_qrcode(
+          id,
+          t_create_time,
+          t_create_date,
+          t_status,
+          t_remark,
+          t_month_sharding,
+          t_last_modify_time,
+
+          foreign_system_id,
+          foreign_system,
+          foreign_id,
+          foreign_type,
+          qrcode_info,
+          t_ticket,
+          qrcode_url,
+          qrcode_path,
+          wechat_qrcode_url,
+          expire_time,
+          expire_time_str,
+          qrcode_type
+
+        )
+        values (
+          #{id},
+          #{createTime},
+          #{createDate},
+          #{status},
+          #{remark},
+          #{monthSharding},
+          #{lastModifyTime},
+
+          #{foreignSystemId},
+          #{foreignSystem},
+          #{foreignId},
+          #{foreignType},
+          #{qrcodeInfo},
+          #{ticket},
+          #{qrcodeUrl},
+          #{qrcodePath},
+          #{wechatQrcodeUrl},
+          #{expireTime},
+          #{expireTimeStr},
+          #{qrcodeType}
+
+        )
+    </insert>
+
+    <!--微信用户完整的映射关系-->
+    <resultMap id="wechatQrcodeAllMap" type="WechatUserInfo">
+        <id property="id" column="id"/>
+        <result property="createTime" column="t_create_time"/>
+        <result property="createDate" column="t_create_date"/>
+        <result property="status" column="t_status"/>
+        <result property="remark" column="t_remark"/>
+        <result property="monthSharding" column="t_month_sharding"/>
+        <result property="lastModifyTime" column="t_last_modify_time"/>
+
+        <result property="foreignSystemId" column="foreign_system_id"/>
+        <result property="foreignSystem" column="foreign_system"/>
+        <result property="foreignId" column="foreign_id"/>
+        <result property="foreignType" column="foreign_type"/>
+        <result property="qrcodeInfo" column="qrcode_info"/>
+        <result property="ticket" column="t_ticket"/>
+        <result property="qrcodeUrl" column="qrcode_url"/>
+        <result property="qrcodePath" column="qrcode_path"/>
+        <result property="wechatQrcodeUrl" column="wechat_qrcode_url"/>
+        <result property="expireTime" column="expire_time"/>
+        <result property="expireTimeStr" column="expire_time_str"/>
+        <result property="qrcodeType" column="qrcode_type"/>
+
+    </resultMap>
+
+    <!--获取完整的微信用户信息-->
+    <select id="getWechatQrcode" resultMap="wechatQrcodeAllMap">
+        select id,
+              t_create_time,
+              t_create_date,
+              t_status,
+              t_remark,
+              t_month_sharding,
+              t_last_modify_time,
+
+              foreign_system_id,
+              foreign_system,
+              foreign_id,
+              foreign_type,
+              qrcode_info,
+              t_ticket,
+              qrcode_url,
+              qrcode_path,
+              wechat_qrcode_url,
+              expire_time,
+              expire_time_str,
+              qrcode_type
+
+        from mp_wechat_qrcode
+        <where>
+            foreign_system_id = #{foreignSystemId}
+            and foreign_system = #{foreignSystem}
+            and foreign_id = #{foreignId}
+            and foreign_type = #{foreignType}
+            and qrcode_type = #{qrcodeType}
+            <!--临时二维码-->
+            <if test="qrcodeType = 'type_expire'">
+              and expire_time &gt; #{currentTime}
+            </if>
+        </where>
+
+    </select>
+
+</mapper>

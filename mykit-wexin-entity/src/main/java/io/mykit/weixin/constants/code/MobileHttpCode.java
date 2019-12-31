@@ -42,5 +42,21 @@ public class MobileHttpCode extends BaseHttpCode {
 	 * 没有权限发送客服消息
 	 */
 	public static final int HTTP_NO_LIMIT_TO_SEND_CUSTOM = 6006;
+	/**
+	 * 微信生成二维码报错
+	 */
+	public static final int HTTP_WECHAT_CREATE_QRCODE_ERROR = 6007;
+	/**
+	 * 下载微信二维码失败
+	 */
+	public static final int HTTP_WECHAT_DOWNLOAD_QRCODE_ERROR = 6008;
+	/**
+	 * 微信二维码已存在，不可重复生成
+	 */
+	public static final int HTTP_WECHAT_QRCODE_EXISTS = 6009;
+	/**
+	 * 未生成二维码或二维码已失效
+	 */
+	public static final int HTTP_WECHAT_QRCODE_NOT_EXISTS = 6010;
 
 }

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50724
 File Encoding         : 65001
 
-Date: 2019-12-31 12:04:16
+Date: 2019-12-31 17:32:11
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -174,6 +174,10 @@ CREATE TABLE `mp_wechat_qrcode` (
   `t_ticket` varchar(255) DEFAULT '' COMMENT '微信返回的用于下载二维码图片的标识',
   `qrcode_url` varchar(255) DEFAULT '' COMMENT '二维码访问链接',
   `qrcode_path` varchar(255) DEFAULT '' COMMENT '二维码在服务器的存储地址',
+  `wechat_qrcode_url` varchar(255) DEFAULT '' COMMENT '生成二维码微信返回的Url，二维码图片解析后的地址，开发者可根据该地址自行生成需要的二维码图片',
+  `expire_time` bigint(20) DEFAULT '0' COMMENT '过期时间点的时间戳',
+  `expire_time_str` varchar(50) DEFAULT '' COMMENT '如果是临时二维码，代表过期时间点的时间，格式为yyyy-MM-dd HH:mm:ss',
+  `qrcode_type` varchar(50) DEFAULT '' COMMENT '二维码类型，是永久二维码还是临时二维码 type_noexpire：永久二维码  type_expire: 临时二维码 ',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='存储生成的用户微信二维码';
 

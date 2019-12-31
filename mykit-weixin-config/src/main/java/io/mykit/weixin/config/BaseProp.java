@@ -34,4 +34,12 @@ public class BaseProp {
      * 是否向业务系统获取数据
      */
     public static final String WEXIN_QRCODE_GET_DATA = "wexin.qrcode.get.data";
+    /**
+     * 微信生成的二维码下载后在服务器的访问路径前缀
+     */
+    public static final String WEIXIN_SYSTEM_QRCODE_PREFIX_URL = "weixin.system.qrcode.prefix.url";
+    /**
+     * 微信生成的二维码下载后在服务器的实际存储目录前缀
+     */
+    public static final String WEIXIN_SYSTEM_QRCODE_PREFIX_PATH = "weixin.system.qrcode.prefix.path";
 }
