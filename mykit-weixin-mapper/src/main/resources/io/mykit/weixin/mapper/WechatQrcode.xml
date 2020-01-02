@@ -109,7 +109,7 @@
             and foreign_id = #{foreignId}
             and foreign_type = #{foreignType}
             and qrcode_type = #{qrcodeType}
-            <if test="qrcodeType='type_expire'">
+            <if test="qrcodeType == 'type_expire'">
                 and expire_time &gt; #{currentTime}
             </if>
         </where>
