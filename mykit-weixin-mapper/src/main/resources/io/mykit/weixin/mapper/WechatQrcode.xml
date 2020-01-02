@@ -79,7 +79,7 @@
     </resultMap>
 
     <!--获取完整的微信用户信息-->
-    <select id="getExpireWechatQrcode" resultMap="wechatQrcodeAllMap">
+    <select id="getWechatQrcode" resultMap="wechatQrcodeAllMap">
         select id,
               t_create_time,
               t_create_date,
@@ -102,45 +102,17 @@
               qrcode_type
 
         from mp_wechat_qrcode
-        where
+
+        <where>
             foreign_system_id = #{foreignSystemId}
             and foreign_system = #{foreignSystem}
             and foreign_id = #{foreignId}
             and foreign_type = #{foreignType}
             and qrcode_type = #{qrcodeType}
-            and expire_time &gt; #{currentTime}
-    </select>
-
-    <!--获取完整的微信用户信息-->
-    <select id="getNoExpireWechatQrcode" resultMap="wechatQrcodeAllMap">
-        select id,
-              t_create_time,
-              t_create_date,
-              t_status,
-              t_remark,
-              t_month_sharding,
-              t_last_modify_time,
-
-              foreign_system_id,
-              foreign_system,
-              foreign_id,
-              foreign_type,
-              qrcode_info,
-              t_ticket,
-              qrcode_url,
-              qrcode_path,
-              wechat_qrcode_url,
-              expire_time,
-              expire_time_str,
-              qrcode_type
-
-        from mp_wechat_qrcode
-        where
-            foreign_system_id = #{foreignSystemId}
-            and foreign_system = #{foreignSystem}
-            and foreign_id = #{foreignId}
-            and foreign_type = #{foreignType}
-            and qrcode_type = #{qrcodeType}
+            <if test="qrcodeType='type_expire'">
+                and expire_time &gt; #{currentTime}
+            </if>
+        </where>
 
     </select>
 
