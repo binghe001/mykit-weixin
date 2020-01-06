@@ -50,7 +50,7 @@ QQ：2711098650
 扫一扫关注微信公众号  
 ![微信公众号](https://github.com/sunshinelyz/binghe_resources/blob/master/images/subscribe/qrcode_for_gh_0d4482676600_344.jpg)  
   
-扫一到加入知识星球  
+扫一扫加入知识星球  
 ![知识星球](https://github.com/sunshinelyz/binghe_resources/blob/master/images/subscribe/xq_20200105203129.png)  
 
 
