@@ -20,6 +20,8 @@
         <module>mykit-weixin-gateway</module>
         <module>mykit-weixin-db</module>
         <module>mykit-weixin-scheduler</module>
+        <module>mykit-weixin-test</module>
+        <module>mykit-weixin-config</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,7 +41,21 @@
         <version>1.5.14.RELEASE</version>
     </parent>
 
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://125.64.43.186:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://125.64.43.186:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

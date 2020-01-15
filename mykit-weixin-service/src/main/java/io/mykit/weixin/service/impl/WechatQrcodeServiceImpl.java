@@ -23,7 +23,6 @@ import io.mykit.wechat.mp.http.handler.qrcode.WxQrcodeHandler;
 import io.mykit.wechat.utils.common.DateUtils;
 import io.mykit.wechat.utils.common.StringUtils;
 import io.mykit.weixin.constants.code.MobileHttpCode;
-import io.mykit.weixin.constants.wechat.WechatConstants;
 import io.mykit.weixin.entity.WechatAccount;
 import io.mykit.weixin.entity.WechatQrcode;
 import io.mykit.weixin.mapper.WechatQrcodeMapper;
@@ -176,7 +175,6 @@ public class WechatQrcodeServiceImpl extends WechatCacheServiceImpl implements W
 
     @Override
     public WechatQrcode getWechatQrcode(WechatQrcodeParams wechatQrcodeParams) {
-        wechatQrcodeParams.setShowType(WechatConstants.TYPE_SHOW);
         WechatQrcode wechatQrcode = this.getNativeWechatQrcode(wechatQrcodeParams);
         if (wechatQrcode == null || StringUtils.isEmpty(wechatQrcode.getId())){
             logger.info("未生成二维码或二维码已失效");
