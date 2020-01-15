@@ -35,4 +35,10 @@ public interface WechatQrcodeServcie extends WechatCacheService {
      * 获取微信二维码信息
      */
     WechatQrcode getWechatQrcode(WechatQrcodeParams wechatQrcodeParams);
+
+
+    /**
+     * 更新状态
+     */
+    int updateStatus(WechatQrcodeParams wechatQrcodeParams);
 }

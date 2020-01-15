@@ -112,8 +112,20 @@
             <if test="qrcodeType == 'type_expire'">
                 and expire_time &gt; #{currentTime}
             </if>
+            <if test="showType == 'type_show'">
+                and status = 1
+            </if>
+            <if test="showType == 'type_notshow'">
+                and status = 2
+            </if>
+
         </where>
 
     </select>
+
+
+    <update id="updateStatus">
+        update mp_wechat_qrcode set t_status = #{status} where id = #{id}
+    </update>
 
 </mapper>

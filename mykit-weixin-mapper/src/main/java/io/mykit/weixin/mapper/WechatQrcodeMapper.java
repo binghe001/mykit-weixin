@@ -41,5 +41,13 @@ public interface WechatQrcodeMapper {
                                  @Param("foreignId") String foreignId,
                                  @Param("foreignType") String foreignType,
                                  @Param("qrcodeType") String qrcodeType,
-                                 @Param("currentTime") Long currentTime);
+                                 @Param("currentTime") Long currentTime,
+                                 @Param("showType") String showType);
+
+
+    /**
+     * 更新状态
+     */
+    int updateStatus(@Param("status") Integer status, @Param("id") String id);
+
 }

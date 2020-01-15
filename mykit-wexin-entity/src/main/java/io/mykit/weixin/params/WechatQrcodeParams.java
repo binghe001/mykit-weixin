@@ -38,4 +38,21 @@ public class WechatQrcodeParams extends WechatBaseParams {
      */
     private Integer expireSeconds = 30 * 24 * 60 * 60;
 
+    /**
+     * 是否显示
+     * type_show：显示
+     * type_notshow：不显示
+     */
+    private String showType = "";
+
+    /**
+     * id
+     */
+    private String id = "";
+
+    /**
+     * 状态
+     */
+    private Integer status = 1;
+
 }

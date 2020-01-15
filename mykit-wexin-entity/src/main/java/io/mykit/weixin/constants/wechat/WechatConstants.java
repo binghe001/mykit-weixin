@@ -167,6 +167,14 @@ public class WechatConstants {
      * 不是重试的结果
      */
     public static final String RETRY_FALSE = "retry_false";
+    /**
+     * 不显示
+     */
+    public static final String TYPE_NOTSHOW = "type_notshow";
+    /**
+     * 显示
+     */
+    public static final String TYPE_SHOW = "type_show";
 
     /**
      * 微信状态码

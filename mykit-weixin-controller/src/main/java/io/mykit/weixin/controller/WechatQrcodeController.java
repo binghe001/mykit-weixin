@@ -44,6 +44,29 @@ public class WechatQrcodeController {
     private final Logger logger = LoggerFactory.getLogger(WechatQrcodeController.class);
     @Resource
     private WechatQrcodeServcie wechatQrcodeServcie;
+
+    /**
+     * 更新状态
+     */
+    @RequestMapping(value = "/status/update", method = RequestMethod.POST)
+    public void updateStatus(String parameter, HttpServletRequest request, HttpServletResponse response){
+        try{
+            if(StringUtils.isEmpty(parameter)){
+                ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_PARAMETER_INVALID, response);
+                return;
+            }
+            JSONObject jsonObject = JSONObject.parseObject(parameter);
+            WechatQrcodeParams params = jsonObject.toJavaObject(WechatQrcodeParams.class);
+            wechatQrcodeServcie.updateStatus(params);
+            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_NORMAL, response);
+        }catch (MyException e){
+            e.printStackTrace();
+            ResponseHelper.responseMessage(null, false, true, e.getCode(), response);
+        }catch (Exception e){
+            e.printStackTrace();
+            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_SERVER_EXCEPTION, response);
+        }
+    }
     /**
      * 生成微信二维码
      */
@@ -73,6 +96,7 @@ public class WechatQrcodeController {
     public void detail(String parameter, HttpServletRequest request, HttpServletResponse response){
         try{
             if(StringUtils.isEmpty(parameter)){
+                logger.info("parameter参数为空");
                 ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_PARAMETER_INVALID, response);
                 return;
             }

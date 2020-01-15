@@ -59,8 +59,9 @@ public class BaseEntity implements Serializable {
 
     /**
      * 状态
-     * 1：正常
-     * 0：删除
+     *  0：删除
+     *  1：正常
+     *  2: 不显示
      */
     private Integer status;
 
