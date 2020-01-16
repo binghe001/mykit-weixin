@@ -83,7 +83,7 @@ public class WechatConstants {
     /**
      * 扫描关注微信公众号返回消息
      */
-    public static String QRCODE_SUBSCRIBE_RESPONSE_MESSAGE = "第一步：扫二维码（✓已完成）\n" + "第二步：签约\n\n";
+    public static String QRCODE_SUBSCRIBE_RESPONSE_MESSAGE = "第一步：扫二维码（✓已完成）\n" + "第二步：向医生报道（签约医生获取关注）\n\n";
 
     /**
      * 业务系统返回的消息key
