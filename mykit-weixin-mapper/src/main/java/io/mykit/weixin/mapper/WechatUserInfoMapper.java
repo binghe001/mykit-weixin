@@ -54,6 +54,14 @@ public interface WechatUserInfoMapper {
      * @return 用户的openid
      */
     String getOpenId(@Param("foreignSystemId") String foreignSystemId, @Param("foreignSystem") String foreignSystem, @Param("foreignId") String foreignId, @Param("foreignType") String foreignType);
+    /**
+     * 获取微信用户的微信openId
+     * @param foreignSystemId 其他机构在业务系统中的标识
+     * @param foreignSystem 业务系统的唯一标识
+     * @param foreignId 用户在业务系统中的id
+     * @return 用户的openid
+     */
+    String getOpenIdWithNoForeignType(@Param("foreignSystemId") String foreignSystemId, @Param("foreignSystem") String foreignSystem, @Param("foreignId") String foreignId);
 
     /**
      * 根据其他业务系统的id和类型以及openId获取数据记录的id

@@ -137,5 +137,13 @@
               and foreign_type = #{foreignType}
     </select>
 
-
+    <!--获取指定用户的微信openId-->
+    <select id="getOpenIdWithNoForeignType" resultType="string">
+        select
+              open_id
+        from mp_wechat_user_info
+        where foreign_system_id = #{foreignSystemId}
+              and foreign_system = #{foreignSystem}
+              and foreign_id = #{foreignId}
+    </select>
 </mapper>

@@ -47,6 +47,14 @@ public interface WechatUserInfoService extends WechatCacheService {
      * @return 用户的openid
      */
     String getOpenId(String foreignSystemId, String foreignSystem, String foreignId, String foreignType);
+    /**
+     * 获取微信用户的微信openId
+     * @param foreignSystemId 其他机构在业务系统中的标识
+     * @param foreignSystem 业务系统的唯一标识
+     * @param foreignId 用户在业务系统中的id
+     * @return 用户的openid
+     */
+    String getOpenId(String foreignSystemId, String foreignSystem, String foreignId);
 
 
     /**

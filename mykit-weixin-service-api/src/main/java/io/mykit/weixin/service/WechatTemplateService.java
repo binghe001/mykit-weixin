@@ -41,5 +41,5 @@ public interface WechatTemplateService extends WechatCacheService {
      * @param wechatTemplateParams 发送模板消息的参数
      * @return 发送结果状态码
      */
-    int sendWechatTemplateMessage(WechatTemplateParams wechatTemplateParams) throws MyException;
+    void sendWechatTemplateMessage(WechatTemplateParams wechatTemplateParams) throws MyException;
 }

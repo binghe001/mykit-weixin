@@ -42,12 +42,20 @@ public class WechatConstants {
      * 关注后默认返回的消息
      */
     public static String getSubscribeResponseMessage(){
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("Hi，自今后，让我为您的健康护航！\n");
+//        sb.append("点此<a href=\"http://wx.cdmn.com/medcare/dest/client/fdSignWX/index.html?hospitalId=8a8383af60747eb8016096fdb3dd0144\">立即签约</a>享免费咨询\n");
+//        sb.append("会员中心领<a href=\"https://mp.weixin.qq.com/s?__biz=MzI3Nzc5ODU0MQ==&mid=2247486015&idx=1&sn=cce86eeb08bd8f1cca1c51b973959519&chksm=eb6181dddc1608cb6c59bf0544a940d74011540fc2dace7a11cf2df1c345407928de7faa3720&token=1548696&lang=zh_CN#rd\">健康工具</a>，<a href=\"http://wx.cdmn.com/fdConsultWX/minHtml/index.html?hospitalId=8a8383a458dd38d40158ddd759a10004\">咨询专家</a>\n");
+//        sb.append("如有疑问请咨询健康管家。\n");
+//        sb.append("管家微信号：cmd13088075887\n");
+//        return sb.toString();
+
+
+
         StringBuilder sb = new StringBuilder();
         sb.append("Hi，自今后，让我为您的健康护航！\n");
-        sb.append("点此<a href=\"http://wx.cdmn.com/medcare/dest/client/fdSignWX/index.html?hospitalId=8a8383af60747eb8016096fdb3dd0144\">立即签约</a>享免费咨询\n");
-        sb.append("会员中心领<a href=\"https://mp.weixin.qq.com/s?__biz=MzI3Nzc5ODU0MQ==&mid=2247486015&idx=1&sn=cce86eeb08bd8f1cca1c51b973959519&chksm=eb6181dddc1608cb6c59bf0544a940d74011540fc2dace7a11cf2df1c345407928de7faa3720&token=1548696&lang=zh_CN#rd\">健康工具</a>，<a href=\"http://wx.cdmn.com/fdConsultWX/minHtml/index.html?hospitalId=8a8383a458dd38d40158ddd759a10004\">咨询专家</a>\n");
-        sb.append("如有疑问请咨询健康管家。\n");
-        sb.append("管家微信号：cmd13088075887\n");
+        sb.append("针对疫情，即日起您可点此<a href=\"http://wx.cdmn.com/fdConsultWX/minHtml/teamDetail.html?teamId=8a8383a761413afa0161417ac7d7000b&isSign=&askBodyType=type_team&askBodyId=8a8383a761413afa0161417ac7d7000b&askBodyName=6218201C75AB201D514D8D394E498BCA670D52A156E2961F&askType=type_charge&hospitalId=8a8383af60747eb8016096fdb3dd0144\">立即免费咨询</a>\n");
+        sb.append("慢性疾病、普通感冒、发热等非紧急病情，以及处于隔离期的朋友、均可微信在线咨询医生，不需要冒着被交叉感染的风险去医院了\n");
         return sb.toString();
     }
 
@@ -187,9 +195,13 @@ public class WechatConstants {
     public static final int WECHAT_CODE_NORMAL = 0;
 
     /**
-     * 默认最大重试20次
+     * 默认最大重试5次
      */
-    public static final int MAX_RETRY_COUNT = 20;
+    public static final int MAX_RETRY_COUNT = 5;
+    /**
+     * 最小重试次数，不重试
+     */
+    public static final int MIN_RETRY_COUNT = 0;
     /**
      * 默认的初始化重试次数0
      */
@@ -199,5 +211,14 @@ public class WechatConstants {
      * 默认获取昨天和今天的数据
      */
     public static final int BEFORE_DAY = 1;
+
+    /**
+     * 发送给单个人
+     */
+    public static final String SEND_SINGLE = "send_single";
+    /**
+     * 发送给多个人
+     */
+    public static final String SEND_MULTI = "send_multi";
 
 }

@@ -29,7 +29,6 @@ public interface WechatKfaccountTextMsgLogService extends WechatCacheService {
     /**
      * 发送微信客服文本消息
      * @param wechatKfaccountTextMsgParams 接收的客户端参数
-     * @return 返回状态码
      */
-    int sendWechatKfaccountTextMsg(WechatKfaccountTextMsgParams wechatKfaccountTextMsgParams) throws Exception;
+    void sendWechatKfaccountTextMsg(WechatKfaccountTextMsgParams wechatKfaccountTextMsgParams) throws Exception;
 }

@@ -126,7 +126,11 @@ public class WechatUserInfoServiceImpl extends WechatCacheServiceImpl implements
 
     @Override
     public String getOpenId(String foreignSystemId, String foreignSystem, String foreignId, String foreignType) {
-        String key = foreignSystemId.concat(foreignSystem).concat(foreignId).concat(foreignType).concat(WechatConstants.WECHAT_OPENID);
+        String key = foreignSystemId.concat(foreignSystem).concat(foreignId);
+        if(!StringUtils.isEmpty(foreignType)){
+            key = key.concat(foreignType);
+        }
+        key = key.concat(WechatConstants.WECHAT_OPENID);
         String openId = getJedisCluster().get(key);
         if(StringUtils.isEmpty(openId) || WechatConstants.NULL_STRING.equalsIgnoreCase(openId)){
             openId = wechatUserInfoMapper.getOpenId(foreignSystemId, foreignSystem, foreignId, foreignType);
@@ -135,6 +139,11 @@ public class WechatUserInfoServiceImpl extends WechatCacheServiceImpl implements
             }
         }
         return openId;
+    }
+
+    @Override
+    public String getOpenId(String foreignSystemId, String foreignSystem, String foreignId) {
+        return getOpenId(foreignSystemId, foreignSystem, foreignId, null);
     }
 
     @Override

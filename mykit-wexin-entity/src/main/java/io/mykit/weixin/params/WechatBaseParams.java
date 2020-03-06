@@ -15,6 +15,8 @@
  */
 package io.mykit.weixin.params;
 
+import io.mykit.weixin.constants.wechat.WechatConstants;
+import io.mykit.weixin.entity.WechatUserInfo;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -26,14 +28,14 @@ import java.io.Serializable;
  * @version 1.0.0
  */
 @Data
-public class WechatBaseParams implements Serializable {
+public class WechatBaseParams extends WechatUserParams {
     private static final long serialVersionUID = -5240931137248273502L;
     //其他机构在业务系统中的id
     private String foreignSystemId = "";
     //其他业务系统标识
     private String foreignSystem = "";
-    //微信用户在其他业务系统中的id
-    private String foreignId = "";
-    //微信用户在其他业务系统中的类型(可用作权限划分)
-    private String foreignType = "";
+    //发送类型:send_single：指定单个人发送，send_multi:发送给多个人
+    //默认为发送给单个人，当此值为send_multi发送给多个人时，
+    //foreignId为用户id的JsonArray数组，[{"foreignId":"xxx", "foreignType":"xxx"}]
+    private String sendType = WechatConstants.SEND_SINGLE;
 }

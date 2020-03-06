@@ -56,19 +56,7 @@ public class WechatTemplateController {
      */
     @RequestMapping(value = "/msg/send", method = RequestMethod.POST)
     public void sendMsg(String parameter, HttpServletRequest request, HttpServletResponse response){
-        try{
-            logger.info(parameter);
-            if(StringUtils.isEmpty(parameter)){
-                ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_PARAMETER_INVALID, response);
-                return;
-            }
-            WechatTemplateParams params = JsonUtils.json2Bean(parameter, WechatTemplateParams.class);
-            int code = wechatTemplateService.sendWechatTemplateMessage(params);
-            ResponseHelper.responseMessage(null, false, true, code, response);
-        }catch (Exception e){
-            e.printStackTrace();
-            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_SERVER_EXCEPTION, response);
-        }
+        this.sendMsgV2(parameter, request, response);
     }
 
     /**

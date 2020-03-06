@@ -15,11 +15,13 @@
  */
 package io.mykit.weixin.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import io.mykit.wechat.mp.beans.json.template.WxTemplateDataItemSend;
 import io.mykit.wechat.mp.beans.json.template.send.WxTemplateDataSend;
 import io.mykit.wechat.mp.beans.json.template.send.WxTemplateSend;
 import io.mykit.wechat.mp.http.handler.template.send.WxTemplateSendHandler;
+import io.mykit.wechat.utils.common.ObjectUtils;
 import io.mykit.wechat.utils.common.StringUtils;
 import io.mykit.wechat.utils.json.JsonUtils;
 import io.mykit.weixin.constants.code.MobileHttpCode;
@@ -31,18 +33,23 @@ import io.mykit.weixin.entity.WechatUserInfo;
 import io.mykit.weixin.mapper.WechatTemplateMapper;
 import io.mykit.weixin.mapper.WechatTemplateMsgLogMapper;
 import io.mykit.weixin.mapper.WechatUserInfoMapper;
+import io.mykit.weixin.params.WechatKfaccountTextMsgParams;
 import io.mykit.weixin.params.WechatTemplateParams;
+import io.mykit.weixin.params.WechatUserParams;
 import io.mykit.weixin.service.WechatAccountService;
+import io.mykit.weixin.service.WechatTemplateMsgFailedService;
 import io.mykit.weixin.service.WechatTemplateService;
 import io.mykit.weixin.service.WechatUserInfoService;
 import io.mykit.weixin.service.impl.base.WechatCacheServiceImpl;
 import io.mykit.weixin.utils.exception.MyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author liuyazhuang
@@ -63,6 +70,8 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
     private WechatUserInfoService wechatUserInfoService;
     @Resource
     private WechatUserInfoMapper wechatUserInfoMapper;
+    @Resource
+    private WechatTemplateMsgFailedService wechatTemplateMsgFailedService;
 
     @Override
     public WechatTemplate getWechatTemplateByType(String type, String accountId) {
@@ -80,7 +89,7 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int sendWechatTemplateMessage(WechatTemplateParams wechatTemplateParams) throws MyException {
+    public void sendWechatTemplateMessage(WechatTemplateParams wechatTemplateParams) throws MyException {
         WechatAccount wechatAccount = wechatAccountService.getWechatAccountByForeignIdAndSystem(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem());
         if(wechatAccount == null){
             logger.info("未获取到微信开发者账号信息....");
@@ -97,6 +106,67 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
             logger.info("未获取到微信消息模板....");
             throw new MyException("未获取到微信消息模板", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE);
         }
+        String sendType = wechatTemplateParams.getSendType();
+        //获取到的sendType为空，为其复制为send_single
+        if(StringUtils.isEmpty(sendType)){
+            sendType = WechatConstants.SEND_SINGLE;
+        }
+        switch (sendType){
+            case WechatConstants.SEND_SINGLE:
+                this.sendSingleWechatTemplateMessage(wechatTemplateParams, wechatAccount, wechatTemplate);
+                break;
+            case WechatConstants.SEND_MULTI:
+                this.sendMutilWechatTemplateMessage(wechatTemplateParams, wechatAccount, wechatTemplate);
+                break;
+            default:
+                throw new MyException("传递的sendType参数非法," , MobileHttpCode.HTTP_PARAMETER_INVALID);
+        }
+
+    }
+
+    /**
+     * 向多个用户分别发送微信消息
+     */
+    private void sendMutilWechatTemplateMessage(WechatTemplateParams wechatTemplateParams, WechatAccount wechatAccount, WechatTemplate wechatTemplate) {
+        //获取用户的列表
+        String foreignIds = wechatTemplateParams.getForeignId();
+        if(StringUtils.isEmpty(foreignIds)){
+            throw new MyException("传递的用户业务id为为空," , MobileHttpCode.HTTP_PARAMETER_INVALID);
+        }
+        JSONArray jsonArray = JSONArray.parseArray(foreignIds);
+        List<WechatUserParams> list = jsonArray.toJavaList(WechatUserParams.class);
+        if (!ObjectUtils.isEmpty(list)){
+            for(int i = 0; i < list.size(); i++){
+                WechatUserParams userParams = list.get(i);
+                //获取用户的openId
+                String openId = wechatUserInfoService.getOpenId(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem(), userParams.getForeignId(), userParams.getForeignType());
+                //未获取到openId
+                if(StringUtils.isEmpty(openId)){
+                    this.saveFailedMessage(wechatTemplateParams, userParams, MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID, "未获取到openId");
+                }else{
+                    this.sendMessage(wechatTemplateParams, userParams, wechatAccount, wechatTemplate, openId, false);
+                }
+            }
+        }
+    }
+
+    /**
+     * 保存发送失败的消息
+     */
+    private void saveFailedMessage(WechatTemplateParams srcParams, WechatUserParams userParams, Integer errCode, String errorMsg){
+        WechatTemplateParams tarParams = new WechatTemplateParams();
+        BeanUtils.copyProperties(srcParams, tarParams);
+        tarParams.setForeignId(userParams.getForeignId());
+        tarParams.setForeignType(userParams.getForeignType());
+        tarParams.setSendType(WechatConstants.SEND_SINGLE);
+        //保存失败记录
+        wechatTemplateMsgFailedService.saveWechatTemplateMsgFailed(JsonUtils.bean2Json(tarParams),  errCode, errorMsg, WechatConstants.MAX_RETRY_COUNT, WechatConstants.CURRENT_RETRY_INIT_COUNT);
+    }
+
+    /**
+     * 向单个用户发送微信模板消息
+     */
+    private void sendSingleWechatTemplateMessage(WechatTemplateParams wechatTemplateParams, WechatAccount wechatAccount, WechatTemplate wechatTemplate) {
         String openId = "";
         if(StringUtils.isEmpty(wechatTemplateParams.getOpenId())){
             openId = wechatUserInfoService.getOpenId(wechatTemplateParams.getForeignSystemId(), wechatTemplateParams.getForeignSystem(), wechatTemplateParams.getForeignId(), wechatTemplateParams.getForeignType());
@@ -130,6 +200,13 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
             logger.info("未获取到微信openid....");
             throw new MyException("未获取到微信openid", MobileHttpCode.HTTP_NOT_GET_WECHAT_OPEN_ID);
         }
+        sendMessage(wechatTemplateParams, null, wechatAccount, wechatTemplate, openId, true);
+    }
+
+    /**
+     * 发送微信消息
+     */
+    private void sendMessage(WechatTemplateParams wechatTemplateParams, WechatUserParams userParams,  WechatAccount wechatAccount, WechatTemplate wechatTemplate, String openId, boolean isThrowException) {
         WxTemplateDataSend wxTemplateDataSend = new WxTemplateDataSend();
         if(!StringUtils.isEmpty(wechatTemplateParams.getFirst())){
             wxTemplateDataSend.setFirst(new WxTemplateDataItemSend(wechatTemplateParams.getFirst(), "#173177"));
@@ -190,18 +267,38 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
             result = WxTemplateSendHandler.sendTemplate(wechatAccount.getAppId(), wechatAccount.getAppSecret(), wxTemplateSend);
         }catch (Exception e) {
             e.printStackTrace();
-            throw new MyException("服务端异常", MobileHttpCode.HTTP_SERVER_EXCEPTION);
+            if (isThrowException){
+                throw new MyException("服务端异常", MobileHttpCode.HTTP_SERVER_EXCEPTION);
+            }else{
+                this.saveFailedMessage(wechatTemplateParams, userParams, MobileHttpCode.HTTP_SERVER_EXCEPTION, "服务端异常");
+                return;
+            }
         }
         if(StringUtils.isEmpty(result)){
-            throw new MyException("发送微信模板消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+            if (isThrowException){
+                throw new MyException("发送微信模板消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+            }else{
+                this.saveFailedMessage(wechatTemplateParams, userParams, MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED, "发送微信模板消息失败");
+                return;
+            }
         }
         JSONObject jsonObject = JSONObject.parseObject(result);
         if (!jsonObject.containsKey(WechatConstants.WEHCAT_ERROR_CODE)){
-            throw new MyException("发送微信模板消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+            if (isThrowException){
+                throw new MyException("发送微信模板消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+            }else{
+                this.saveFailedMessage(wechatTemplateParams, userParams, MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED, "发送微信模板消息失败");
+                return;
+            }
         }
         Integer wechatCode = jsonObject.getInteger(WechatConstants.WEHCAT_ERROR_CODE);
         if(wechatCode == null || wechatCode != WechatConstants.WECHAT_CODE_NORMAL){
-            throw new MyException("发送微信模板消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+            if (isThrowException){
+                throw new MyException("发送微信模板消息失败", MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED);
+            }else{
+                this.saveFailedMessage(wechatTemplateParams, userParams, MobileHttpCode.HTTP_NOT_GET_WECHAT_TEMPLATE_SEND_FAILED, "发送微信模板消息失败");
+                return;
+            }
         }
         WechatTemplateMsgLog wechatTemplateMsgLog = new WechatTemplateMsgLog();
         wechatTemplateMsgLog.setAccountId(wechatAccount.getId());
@@ -215,6 +312,6 @@ public class WechatTemplateServiceImpl extends WechatCacheServiceImpl implements
         wechatTemplateMsgLog.setResult(result);
         wechatTemplateMsgLog.setWxParameter(JsonUtils.bean2Json(wxTemplateSend));
         wechatTemplateMsgLog.setRetry(wechatTemplateParams.getRetry());
-        return wechatTemplateMsgLogMapper.saveWechatTemplateMsgLog(wechatTemplateMsgLog);
+        wechatTemplateMsgLogMapper.saveWechatTemplateMsgLog(wechatTemplateMsgLog);
     }
 }
