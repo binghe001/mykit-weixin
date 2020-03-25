@@ -13,28 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.mykit.weixin.service;
+package io.mykit.weixin.params;
 
-import io.mykit.weixin.params.WechatKfaccountNewsMsgParams;
-import io.mykit.weixin.params.WechatKfaccountTextMsgParams;
-import io.mykit.weixin.service.base.WechatCacheService;
+import lombok.Data;
 
 /**
  * @author liuyazhuang
  * @version 1.0.0
  * @date 2019/5/8
- * @description 微信客服消息发送记录service
+ * @description 微信客服文本消息
  */
-public interface WechatKfaccountTextMsgLogService extends WechatCacheService {
+@Data
+public class WechatKfaccountNewsMsgParams extends WechatKfaccountMsgParams {
+    private static final long serialVersionUID = -6134126025999753372L;
+    /**
+     * 描述
+     */
+    private String description = "";
 
     /**
-     * 发送微信客服文本消息
-     * @param wechatKfaccountTextMsgParams 接收的客户端参数
+     * 图片
      */
-    void sendWechatKfaccountTextMsg(WechatKfaccountTextMsgParams wechatKfaccountTextMsgParams) throws Exception;
+    private String picUrl = "";
 
     /**
-     * 发送微信图文消息
+     * 标题
      */
-    void sendWechatKfaccountNewsMsg(WechatKfaccountNewsMsgParams wechatKfaccountNewsMsgParams) throws Exception;
+    private String title = "";
+
+    /**
+     * 链接
+     */
+    private String url = "";
+
+    /**
+     * 用户的openId
+     */
+    private String openId = "";
+
+    /**
+     * 是否重试，默认为否
+     */
+    private String retry = "retry_false";
 }

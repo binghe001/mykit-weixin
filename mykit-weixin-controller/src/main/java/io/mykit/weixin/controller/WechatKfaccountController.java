@@ -19,11 +19,15 @@ import io.mykit.wechat.utils.common.StringUtils;
 import io.mykit.wechat.utils.json.JsonUtils;
 import io.mykit.weixin.constants.code.MobileHttpCode;
 import io.mykit.weixin.constants.wechat.WechatConstants;
+import io.mykit.weixin.params.WechatKfaccountNewsMsgParams;
 import io.mykit.weixin.params.WechatKfaccountTextMsgParams;
+import io.mykit.weixin.proxy.BaseController;
 import io.mykit.weixin.service.WechatKfaccountTextMsgFailedService;
 import io.mykit.weixin.service.WechatKfaccountTextMsgLogService;
 import io.mykit.weixin.utils.exception.MyException;
 import io.mykit.weixin.utils.resp.helper.ResponseHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +44,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 @RequestMapping(value = "/wechat/kfaccount")
-public class WechatKfaccountController {
+public class WechatKfaccountController extends BaseController {
+    private final Logger logger = LoggerFactory.getLogger(WechatKfaccountController.class);
     @Resource
     private WechatKfaccountTextMsgLogService wechatKfaccountMsgLogService;
     @Resource
@@ -63,14 +68,35 @@ public class WechatKfaccountController {
             wechatKfaccountMsgLogService.sendWechatKfaccountTextMsg(params);
             ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_NORMAL, response);
         }catch (MyException e){
+            logger.error("发送客服消息捕获异常：{}", e);
             ResponseHelper.responseMessage(null, false, true, e.getCode(), response);
             //保存失败记录
             wechatKfaccountTextMsgFailedService.saveWechatKfaccountTextMsgFailed(parameter, e.getCode(), e.getMessage(), WechatConstants.MAX_RETRY_COUNT, WechatConstants.CURRENT_RETRY_INIT_COUNT);
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error("发送客服消息捕获异常：{}", e);
             ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_SERVER_EXCEPTION, response);
             //保存失败记录
             wechatKfaccountTextMsgFailedService.saveWechatKfaccountTextMsgFailed(parameter, MobileHttpCode.HTTP_SERVER_EXCEPTION, e.getMessage(), WechatConstants.MAX_RETRY_COUNT, WechatConstants.CURRENT_RETRY_INIT_COUNT);
+        }
+    }
+
+    /**
+     * 发送微信客服图文消息
+     * @param parameter
+     * @param request
+     * @param response
+     */
+    @RequestMapping(value = "/msg/news/send", method = RequestMethod.POST)
+    public void sendWechatKfaccountNewsMsg(WechatKfaccountNewsMsgParams parameter, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            wechatKfaccountMsgLogService.sendWechatKfaccountNewsMsg(parameter);
+            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_NORMAL, response);
+        } catch (MyException e) {
+            logger.error("发送客服消息捕获异常：{}", e);
+            ResponseHelper.responseMessage(null, false, true, e.getCode(), response);
+        } catch (Exception e) {
+            logger.error("发送客服消息捕获异常：{}", e);
+            ResponseHelper.responseMessage(null, false, true, MobileHttpCode.HTTP_SERVER_EXCEPTION, response);
         }
     }
 }

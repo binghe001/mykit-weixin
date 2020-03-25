@@ -31,6 +31,7 @@ import io.mykit.weixin.entity.WechatKfaccountTextMsgLog;
 import io.mykit.weixin.entity.WechatUserInfo;
 import io.mykit.weixin.mapper.WechatKfaccountTextMsgLogMapper;
 import io.mykit.weixin.mapper.WechatUserInfoMapper;
+import io.mykit.weixin.params.WechatKfaccountNewsMsgParams;
 import io.mykit.weixin.params.WechatKfaccountTextMsgParams;
 import io.mykit.weixin.params.WechatUserParams;
 import io.mykit.weixin.service.WechatAccountService;
@@ -38,7 +39,9 @@ import io.mykit.weixin.service.WechatKfaccountTextMsgFailedService;
 import io.mykit.weixin.service.WechatKfaccountTextMsgLogService;
 import io.mykit.weixin.service.WechatUserInfoService;
 import io.mykit.weixin.service.impl.base.WechatCacheServiceImpl;
+import io.mykit.weixin.service.task.WxKfaccountNewsMessageTask;
 import io.mykit.weixin.utils.exception.MyException;
+import io.mykit.weixin.utils.thread.ExecutorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -95,6 +98,56 @@ public class WechatKfaccountTextMsgLogServiceImpl extends WechatCacheServiceImpl
                 throw new MyException("传递的sendType参数非法," , MobileHttpCode.HTTP_PARAMETER_INVALID);
         }
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void sendWechatKfaccountNewsMsg(WechatKfaccountNewsMsgParams wechatKfaccountNewsMsgParams) throws Exception {
+        WechatAccount wechatAccount = wechatAccountService.getWechatAccountByForeignIdAndSystem(wechatKfaccountNewsMsgParams.getForeignSystemId(), wechatKfaccountNewsMsgParams.getForeignSystem());
+        if(wechatAccount == null){
+            logger.info("未获取到微信开发者账号信息....");
+            throw new MyException("未获取到微信开发者账号信息", MobileHttpCode.HTTP_NOT_GET_WECHAT_ACCOUNT);
+        }
+        //是否有权限发送模板消息,没有权限发送，直接返回状态码
+        if(StringUtils.isEmpty(wechatAccount.getSendCustom()) || WechatConstants.SEND_NO.equals(wechatAccount.getSendCustom())){
+            throw new MyException("没有权限发送", MobileHttpCode.HTTP_NO_LIMIT_TO_SEND_TEMPLATE);
+        }
+        String sendType = wechatKfaccountNewsMsgParams.getSendType();
+        if(StringUtils.isEmpty(sendType)){
+            sendType = WechatConstants.SEND_SINGLE;
+        }
+        switch (sendType){
+            case WechatConstants.SEND_SINGLE:
+                this.sendSingleWechatKfaccountNewsMsg(wechatKfaccountNewsMsgParams, wechatAccount);
+                break;
+            case WechatConstants.SEND_MULTI:
+                this.sendMutileWechatKfaccountNewsMsg(wechatKfaccountNewsMsgParams, wechatAccount);
+                break;
+            case WechatConstants.SEND_ALL:
+                this.sendAllWechatKfaccountNewsMsg(wechatKfaccountNewsMsgParams, wechatAccount);
+                break;
+            default:
+                throw new MyException("传递的sendType参数非法," , MobileHttpCode.HTTP_PARAMETER_INVALID);
+        }
+
+    }
+    //发送给单个成员
+    private void sendSingleWechatKfaccountNewsMsg(WechatKfaccountNewsMsgParams wechatKfaccountNewsMsgParams, WechatAccount wechatAccount) {
+        //TODO 待实现
+    }
+
+    //发送给多个成员
+    private void sendMutileWechatKfaccountNewsMsg(WechatKfaccountNewsMsgParams wechatKfaccountNewsMsgParams, WechatAccount wechatAccount) {
+        //TODO 待实现
+    }
+
+    //发送给所有成员
+    private void sendAllWechatKfaccountNewsMsg(WechatKfaccountNewsMsgParams wechatKfaccountNewsMsgParams, WechatAccount wechatAccount) {
+        WxKfaccountNewsMessageTask task = new WxKfaccountNewsMessageTask(wechatUserInfoMapper, wechatKfaccountNewsMsgParams, wechatAccount);
+        ExecutorUtils.executeThread(task);
+
+    }
+
+
 
     /**
      * 向多个用户发送微信消息

@@ -220,5 +220,9 @@ public class WechatConstants {
      * 发送给多个人
      */
     public static final String SEND_MULTI = "send_multi";
+    /**
+     * 全员发送
+     */
+    public static final String SEND_ALL = "send_all";
 
 }

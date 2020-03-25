@@ -18,6 +18,8 @@ package io.mykit.weixin.mapper;
 import io.mykit.weixin.entity.WechatUserInfo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @author liuyazhuang
  * @date 2018/10/30 14:45
@@ -79,4 +81,15 @@ public interface WechatUserInfoMapper {
      * @return 更新的记录条数
      */
     int updateForeignId(@Param("foreignId") String foreignId, @Param("id") String id);
+
+
+    /**
+     * 获取总数量
+     */
+    int getCount(@Param("foreignSystemId") String foreignSystemId, @Param("foreignSystem") String foreignSystem);
+
+    /**
+     * 分页获取数量
+     */
+    List<String> getOpenIdPageList(@Param("offset") int offset, @Param("pageSize") int pageSize, @Param("foreignSystemId") String foreignSystemId, @Param("foreignSystem") String foreignSystem);
 }

@@ -146,4 +146,13 @@
               and foreign_system = #{foreignSystem}
               and foreign_id = #{foreignId}
     </select>
+
+    <select id="getCount" resultType="int">
+        select  count(*) from mp_wechat_user_info where foreign_system_id = #{foreignSystemId} and foreign_system = #{foreignSystem}
+    </select>
+
+    <select id="getOpenIdPageList" resultType="string">
+        select open_id from  mp_wechat_user_info where foreign_system_id = #{foreignSystemId} and foreign_system = #{foreignSystem} limit #{offset}, #{pageSize}
+    </select>
+
 </mapper>
